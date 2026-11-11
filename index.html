@@ -1,0 +1,1501 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#d1e7dd">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Muguet Music">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Muguet Music</title>
+<style>
+:root{--mint:#d1e7dd;--mint2:#e8f5e9;--paper:#f8fcfa;--gold:#9aa0a6;--gold2:#c7ccd1;--ink:#30433b;--muted:#718078;--line:rgba(48,67,59,.12);--shadow:0 16px 45px rgba(48,67,59,.10)}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,"Noto Sans JP",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:linear-gradient(145deg,#e8f5e9,#d1e7dd 55%,#f8fcfa);-webkit-tap-highlight-color:transparent}
+button,input{font:inherit}button{border:0;background:none;color:inherit;cursor:pointer}.app{min-height:100vh;display:flex;flex-direction:column}
+.topbar{height:78px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,4vw,52px);border-bottom:1px solid var(--line);background:rgba(248,252,250,.78);backdrop-filter:blur(18px);position:sticky;top:0;z-index:20}
+.brand{display:flex;gap:12px;align-items:center}.logo{width:58px;height:58px;border-radius:15px;display:grid;place-items:center;background:transparent;box-shadow:none;overflow:hidden}.logo img{width:100%;height:100%;object-fit:cover;border-radius:15px}.brand h1{font-family:Georgia,serif;letter-spacing:.08em;font-size:22px;margin:0}.brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:.18em}
+.main{width:min(1180px,100%);margin:auto;padding:28px clamp(16px,4vw,44px) 180px;flex:1}.view{animation:fade .35s ease}.hero{display:flex;justify-content:space-between;gap:24px;align-items:end;margin:12px 0 24px}.eyebrow{color:var(--gold);letter-spacing:.2em;font-size:11px;font-weight:700}.hero h2{font-family:Georgia,serif;font-weight:500;font-size:clamp(30px,5vw,50px);margin:6px 0}.hero p{color:var(--muted);margin:0}.search{width:min(330px,100%);border:1px solid var(--line);background:rgba(255,255,255,.65);border-radius:999px;padding:12px 16px;outline:none}.search:focus{border-color:var(--gold)}
+.groups{display:grid;gap:24px}.group{background:rgba(255,255,255,.62);border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:0 8px 30px rgba(48,67,59,.05)}.group-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.group-title h3{font-family:Georgia,serif;font-weight:500;margin:0;font-size:20px}.count{font-size:12px;color:var(--muted)}
+.track{display:grid;grid-template-columns:46px 1fr auto;gap:12px;align-items:center;padding:11px 8px;border-radius:15px;transition:.2s}.track:hover{background:rgba(209,231,221,.45)}.cover{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,#eef8f2,#c7dfd4);color:var(--gold);font-family:Georgia,serif;font-size:18px;overflow:hidden}.cover img{width:100%;height:100%;object-fit:cover}.track strong{display:block;font-size:14px;font-weight:600}.track span{display:block;color:var(--muted);font-size:12px;margin-top:3px}.track-actions{display:flex;gap:4px}.icon-btn{width:34px;height:34px;border-radius:50%;display:grid;place-items:center}.icon-btn:hover,.icon-btn.active{background:rgba(197,160,89,.14);color:var(--gold)}svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.bottom{position:fixed;left:0;right:0;bottom:0;z-index:30;padding:8px max(10px,env(safe-area-inset-left)) max(10px,env(safe-area-inset-bottom));background:rgba(248,252,250,.9);backdrop-filter:blur(22px);border-top:1px solid var(--line)}.mini{width:min(760px,100%);margin:0 auto 8px;background:rgba(255,255,255,.86);border:1px solid var(--line);border-radius:17px;padding:8px 12px;display:grid;grid-template-columns:42px 1fr auto;align-items:center;gap:10px;box-shadow:var(--shadow)}.mini .cover{width:42px;height:42px;border-radius:10px}.mini strong{font-size:13px}.mini small{display:block;color:var(--muted);font-size:11px}.mini-play{width:38px;height:38px;border-radius:50%;background:var(--gold);color:white;display:grid;place-items:center}.nav{display:grid;grid-template-columns:repeat(5,1fr);max-width:760px;margin:auto}.nav button{padding:6px 3px;color:#73827c;font-size:10px;display:flex;flex-direction:column;align-items:center;gap:4px;border-radius:14px}.nav button.active{color:var(--gold);font-weight:700}.nav button.active svg{filter:drop-shadow(0 2px 4px rgba(197,160,89,.2))}.nav svg{width:21px;height:21px}
+.player{position:fixed;inset:0;z-index:50;background:linear-gradient(160deg,#f8fcfa,#d1e7dd);transform:translateY(100%);transition:transform .45s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;padding:18px clamp(18px,5vw,70px) max(20px,env(safe-area-inset-bottom));overflow:auto}.player.open{transform:translateY(0)}.player-head{display:flex;align-items:center;justify-content:space-between}.player-head h2{font-family:Georgia,serif;font-weight:500;font-size:16px;letter-spacing:.12em}.art-wrap{width:min(430px,82vw);aspect-ratio:1;margin:30px auto 25px;perspective:900px}.art{width:100%;height:100%;border-radius:28px;background:radial-gradient(circle at 30% 25%,#fff 0 6%,transparent 7%),radial-gradient(circle at 65% 60%,rgba(255,255,255,.65) 0 8%,transparent 9%),linear-gradient(145deg,#edf9f1,#b9d5c8);box-shadow:0 28px 65px rgba(48,67,59,.18);display:grid;place-items:center;color:var(--gold);transition:.5s;overflow:hidden;cursor:pointer}.art img{width:100%;height:100%;object-fit:cover}.art.flipped{transform:rotateY(180deg)}.lyrics{display:none;width:min(560px,100%);margin:10px auto 20px;min-height:340px;padding:28px;border-radius:24px;background:rgba(255,255,255,.55);text-align:center;line-height:2.2;color:#53665d}.lyrics.show{display:block;animation:fade .35s}.art.hide{display:none}.now{max-width:560px;width:100%;margin:auto;text-align:center}.now h1{font-family:Georgia,serif;font-weight:500;margin:0 0 5px;font-size:clamp(22px,5vw,31px)}.now p{margin:0;color:var(--muted)}.progress{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;gap:10px;margin-top:25px;font-size:11px;color:var(--muted)}input[type=range]{accent-color:var(--gold);width:100%}.controls{display:flex;justify-content:center;align-items:center;gap:16px;margin:20px 0}.big-play{width:64px;height:64px;border-radius:50%;background:var(--gold);color:white;display:grid;place-items:center;box-shadow:0 10px 25px rgba(197,160,89,.3)}.subcontrols{display:flex;justify-content:center;gap:12px}.subcontrols .active{color:var(--gold);background:rgba(197,160,89,.13)}.volume{display:flex;align-items:center;gap:10px;max-width:260px;margin:18px auto}.close{background:rgba(255,255,255,.7);border:1px solid var(--line)}
+/* YouTube official IFrame Player */
+.youtube-player-wrap{display:none;width:min(200px,70vw);margin:16px auto 8px;text-align:center}
+.youtube-player-wrap.visible{display:block}
+.youtube-player-box{width:200px;height:200px;margin:8px auto 0;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:#000;box-shadow:var(--shadow)}
+.youtube-player-box iframe{display:block;width:200px!important;height:200px!important;border:0}
+
+.youtube-local-card{width:200px;height:200px;margin:8px auto 0;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:rgba(255,255,255,.74);box-shadow:var(--shadow);position:relative;display:grid;place-items:center}
+.youtube-local-card img{width:100%;height:100%;object-fit:cover;display:block}
+.youtube-local-card::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(0,0,0,.28));pointer-events:none}
+.youtube-local-open{position:absolute;z-index:2;bottom:12px;left:50%;transform:translateX(-50%);border:1px solid rgba(255,255,255,.75);background:rgba(255,255,255,.94);color:#31453d;border-radius:999px;padding:8px 14px;font-weight:800;white-space:nowrap;box-shadow:0 6px 18px rgba(0,0,0,.12)}
+.youtube-local-placeholder{width:200px;height:200px;border-radius:16px;border:1px solid var(--line);background:linear-gradient(135deg,#e8f5e9,#f7fbf8);display:grid;place-items:center;color:#71817a;font-size:56px;box-shadow:var(--shadow)}
+.youtube-register{width:min(560px,100%);margin:12px auto 0;display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}
+.youtube-register input{min-width:0;border:1px solid var(--line);background:rgba(255,255,255,.7);border-radius:12px;padding:10px 12px;outline:none}
+.youtube-register input:focus{border-color:var(--gold)}
+.youtube-note{font-size:10px;color:var(--muted);line-height:1.5;margin-top:7px}
+.install-ready{display:grid!important;background:var(--gold)!important;color:white!important}.lyrics-text{white-space:pre-wrap}\n
+.settings-modal{position:fixed;inset:0;z-index:180;display:none;align-items:flex-end;justify-content:center;background:rgba(25,35,31,.38);backdrop-filter:blur(5px)}
+.settings-modal.open{display:flex;animation:fade .2s ease}
+.settings-panel{width:min(680px,100%);max-height:86vh;overflow:auto;background:rgba(248,252,250,.98);border:1px solid var(--line);border-radius:24px 24px 0 0;box-shadow:0 -20px 60px rgba(48,67,59,.18);padding:18px 18px max(22px,env(safe-area-inset-bottom))}
+.settings-head{display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;background:rgba(248,252,250,.98);padding-bottom:10px;z-index:2}
+.settings-head h2{font-family:Georgia,serif;font-weight:500;margin:0;font-size:22px}.settings-section{padding:14px 0;border-top:1px solid var(--line)}
+.settings-section h3{font-size:13px;margin:0 0 10px;color:var(--muted);letter-spacing:.08em}.settings-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:10px 0}.settings-row strong{font-size:14px}.settings-row small{display:block;color:var(--muted);font-size:11px;margin-top:3px;line-height:1.5}.settings-row .silver-action{flex:none}.settings-help{line-height:1.8;font-size:13px;color:var(--ink);background:rgba(209,231,221,.25);padding:13px;border-radius:14px}.settings-help p{margin:0 0 8px}.settings-help p:last-child{margin-bottom:0}.settings-close{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.75);border:1px solid var(--line);display:grid;place-items:center}
+@media(min-width:681px){.settings-modal{align-items:center;padding:20px}.settings-panel{border-radius:24px;max-height:82vh}}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(max-width:680px){.topbar{height:66px}.hero{display:block}.search{margin-top:18px;width:100%}.main{padding-top:20px}.group{padding:12px}.track{grid-template-columns:40px 1fr auto}.cover{width:40px;height:40px}.track-actions .updown{display:none}.art-wrap{margin-top:20px}.player{padding-top:10px}}
+
+.release-tools{display:flex;justify-content:flex-end;padding:0 18px 10px}
+.silver-action{border:1px solid var(--gold);background:rgba(154,160,166,.10);color:var(--ink);border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer}
+.silver-action:hover{background:rgba(154,160,166,.20)}.silver-action.primary{background:var(--gold);color:white}.silver-action.ghost{background:transparent}.silver-action.small{padding:7px 10px;font-size:12px}
+.release-modal{position:fixed;inset:0;background:rgba(20,30,27,.48);display:none;align-items:center;justify-content:center;padding:18px;z-index:100}.release-modal.open{display:flex}
+.release-dialog{width:min(760px,100%);max-height:90vh;overflow:auto;background:var(--paper);border-radius:22px;padding:20px;box-shadow:0 24px 80px rgba(0,0,0,.25)}
+.release-head{display:flex;align-items:center;justify-content:space-between}.release-head h2{margin:3px 0 16px;font-family:Georgia,serif}
+.release-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.release-grid label,.track-row label{display:grid;gap:6px;font-size:12px;color:var(--muted);font-weight:700}
+.release-grid input,.release-grid select,.track-row input{width:100%;box-sizing:border-box;padding:11px;border:1px solid var(--line);border-radius:10px;background:white}
+.artwork-pick{display:flex;gap:16px;align-items:center;margin:18px 0;padding:14px;border:1px solid var(--line);border-radius:16px;background:rgba(209,231,221,.28)}
+.artwork-preview{width:120px;height:120px;border-radius:14px;overflow:hidden;display:grid;place-items:center;background:linear-gradient(145deg,#e8f5e9,#c7ccd1);color:#718078;font-size:11px;flex:none}.artwork-preview img{width:100%;height:100%;object-fit:cover}
+.artwork-pick p,.modal-note{font-size:12px;color:var(--muted);line-height:1.6}.track-editor{border-top:1px solid var(--line);padding-top:16px}
+.track-editor-head{display:flex;align-items:center;justify-content:space-between}.track-editor h3{margin:0;font-family:Georgia,serif}
+.track-row{display:grid;grid-template-columns:36px 1fr 34px;gap:8px;align-items:end;margin-top:8px}.track-no{height:40px;display:grid;place-items:center;color:var(--muted);font-size:12px}.track-remove{height:40px;border:1px solid var(--line);background:white;border-radius:10px;cursor:pointer}
+.release-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+@media(max-width:620px){.release-tools{padding:0 12px 8px}.release-grid{grid-template-columns:1fr}.release-dialog{padding:15px}.artwork-pick{align-items:flex-start}.artwork-preview{width:96px;height:96px}.release-actions{flex-direction:column-reverse}.release-actions button{width:100%}}
+
+.release-library{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px;margin:10px 0 24px}
+.release-card{background:rgba(255,255,255,.72);border:1px solid var(--line);border-radius:18px;padding:12px;box-shadow:0 8px 24px rgba(80,100,90,.06)}
+.release-card-art{aspect-ratio:1/1;border-radius:14px;overflow:hidden;background:linear-gradient(145deg,#e8f5e9,#d7dce0);display:grid;place-items:center;color:#7b8580}
+.release-card-art img{width:100%;height:100%;object-fit:cover}
+.release-card h3{margin:10px 0 3px;font-size:15px}.release-card p{margin:0;color:var(--muted);font-size:12px}
+.release-card-actions{display:flex;gap:7px;margin-top:10px}.release-card-actions button{flex:1;font-size:11px;padding:8px 7px}
+
+.artwork-editor{position:fixed;inset:0;z-index:300;background:rgba(20,30,27,.55);display:none;align-items:center;justify-content:center;padding:18px}
+.artwork-editor.open{display:flex}
+.artwork-editor-box{width:min(460px,100%);background:var(--paper);border-radius:22px;padding:20px;box-shadow:0 24px 80px rgba(0,0,0,.28)}
+.artwork-editor-preview{width:min(280px,80vw);aspect-ratio:1/1;margin:14px auto;border-radius:18px;overflow:hidden;background:linear-gradient(145deg,#e8f5e9,#d7dce0);display:grid;place-items:center}
+.artwork-editor-preview img{width:100%;height:100%;object-fit:cover}
+.artwork-editor-actions{display:flex;gap:8px;justify-content:flex-end}
+.artwork-saved{font-size:12px;color:var(--muted);min-height:18px;margin:8px 0}
+
+#backgroundPlaybackStatus{line-height:1.5;padding:6px 10px;border-radius:10px;background:rgba(209,231,221,.35)}
+
+.more-btn{position:relative;z-index:1000 !important;display:grid !important;place-items:center !important;pointer-events:auto !important;touch-action:manipulation;width:42px;height:42px;font-size:24px;line-height:1}
+.player-head{position:relative;z-index:200}
+.player-head .more-btn{background:rgba(255,255,255,.74);border:1px solid var(--line);box-shadow:0 4px 12px rgba(48,67,59,.07)}
+.topbar .more-btn{margin-left:2px}
+
+.import-label{display:inline-flex;align-items:center;justify-content:center;min-width:132px;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent}
+.import-label:active{transform:translateY(1px)}
+
+.settings-close{display:grid!important;place-items:center!important;width:42px!important;height:42px!important;border-radius:50%!important;cursor:pointer!important;z-index:5000!important;pointer-events:auto!important;touch-action:manipulation!important}
+
+/* Compact settings header */
+#settingsModal .settings-head{min-height:42px}
+#settingsModal .settings-head>div{min-width:0;flex:1}
+#settingsModal #settingsTitle{margin:0!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:19px;letter-spacing:.02em}
+@media(max-width:680px){
+  #settingsModal .settings-panel{padding-top:10px}
+  #settingsModal #settingsTitle{font-size:17px}
+}
+
+/* Settings minimize mode: keep only the title visible */
+#settingsModal.settings-minimized{background:transparent;backdrop-filter:none;align-items:flex-end;padding:0 12px 12px}
+#settingsModal.settings-minimized .settings-panel{width:auto;min-width:210px;max-width:calc(100% - 24px);max-height:none;overflow:hidden;border-radius:18px;padding:10px 12px;box-shadow:0 10px 28px rgba(48,67,59,.14);cursor:pointer}
+#settingsModal.settings-minimized .settings-head{padding:0;min-height:34px;position:static}
+#settingsModal.settings-minimized #settingsTitle{font-size:16px}
+#settingsModal.settings-minimized .settings-head .settings-close{display:none!important}
+#settingsModal.settings-minimized .settings-panel> :not(.settings-head){display:none!important}
+#settingsModal.settings-minimized .settings-head>div{display:block}
+
+.group-title h3{font-size:20px!important;line-height:1.25!important;font-weight:500!important;font-family:Georgia,serif!important;font-variant-numeric:normal!important}
+</style>
+</head>
+<body data-muguet-version="v53">
+<div class="app">
+<header class="topbar"><div class="brand"><div class="logo" aria-label="Muguet Music"><img src="muguet-icon-original.png" alt="Muguet Music"></div><div><h1>Muguet Music</h1><small>PERSONAL MUSIC PLAYER</small></div></div><div style="display:flex;gap:6px;align-items:center"><button class="icon-btn" id="installBtn" title="アプリとして追加" style="display:none">＋</button><button type="button" class="icon-btn more-btn" id="headerMore" title="設定とその他" aria-label="設定とその他">⋯</button><button class="icon-btn" id="headerPlay" title="再生/一時停止"></button></div></header>
+
+<div class="release-tools" id="releaseTools">
+  <button class="silver-action" id="addReleaseBtn">＋ アルバム／シングルを追加</button>
+</div>
+
+<div class="artwork-editor" id="artworkEditor" aria-hidden="true">
+  <div class="artwork-editor-box">
+    <div class="eyebrow">ARTWORK</div>
+    <h2 id="artworkEditorTitle">アートワークを変更</h2>
+    <div class="artwork-editor-preview" id="artworkEditorPreview"><span>ARTWORK</span></div>
+    <div class="artwork-saved" id="artworkSavedMessage"></div>
+    <input id="artworkEditorFile" type="file" accept="image/*" hidden>
+    <div class="artwork-editor-actions">
+      <button class="silver-action" id="artworkPickBtn">画像を選ぶ</button>
+      <button class="silver-action primary" id="artworkSaveBtn">保存</button>
+      <button class="silver-action ghost" id="artworkCancelBtn">閉じる</button>
+    </div>
+  </div>
+</div>
+<div class="release-modal" id="releaseModal" aria-hidden="true">
+  <div class="release-dialog">
+    <div class="release-head"><div><div class="eyebrow">NEW RELEASE</div><h2>アルバム／シングルを追加</h2></div><button class="icon-btn close" id="closeReleaseBtn">×</button></div>
+    <div class="release-grid">
+      <label>種類<select id="releaseType"><option value="album">アルバム</option><option value="single">シングル</option></select></label>
+      <label>タイトル<input id="releaseTitle" placeholder="例：東京スプリングセッション"></label>
+      <label>アーティスト<input id="releaseArtist" placeholder="例：HoneyWorks"></label>
+      <label>発売日<input id="releaseDate" type="date"></label>
+    </div>
+    <div class="artwork-pick">
+      <div class="artwork-preview" id="artworkPreview"><span>ARTWORK</span></div>
+      <div><div class="eyebrow">ARTWORK</div><p>自分で用意したジャケット画像を設定できます。</p><button class="silver-action" id="chooseArtworkBtn">🖼 アートワークを選ぶ</button><input id="artworkFile" type="file" accept="image/*" hidden></div>
+    </div>
+    <div class="track-editor">
+      <div class="track-editor-head"><h3>収録曲</h3><button class="silver-action small" id="addTrackRowBtn">＋ 曲を追加</button></div>
+      <div id="trackRows"></div>
+      <p class="modal-note">曲名を登録したあと、再生画面の「♫」から端末音源を、YouTube欄から公式埋め込み動画を登録できます。</p>
+    </div>
+    <div class="release-actions"><button class="silver-action ghost" id="cancelReleaseBtn">キャンセル</button><button class="silver-action primary" id="saveReleaseBtn">保存してライブラリへ追加</button></div>
+  </div>
+</div>
+<main class="main"><section id="view" class="view"></section></main>
+<div class="bottom">
+  <div class="mini" id="mini"><div class="cover" id="miniCover">♢</div><div><strong id="miniTitle">曲を選択してください</strong><small id="miniArtist">Muguet Music</small></div><button class="mini-play" id="miniPlay" title="再生/一時停止"></button></div>
+  <nav class="nav" id="nav"></nav>
+</div>
+</div>
+
+<div class="player" id="player">
+ <div class="player-head"><button class="icon-btn close" id="closePlayer" title="閉じる"></button><h2 id="playerMode">NOW PLAYING</h2><button type="button" class="icon-btn more-btn" id="playerMore" aria-label="設定とその他" title="設定とその他">⋯</button></div>
+ <div class="art-wrap"><div class="art" id="art" title="ジャケットをタップして歌詞表示"><span id="artMark">♢</span></div></div>
+ <div class="lyrics" id="lyrics">
+  <div class="eyebrow">LYRICS</div><h3 id="lyricTitle">Muguet Song</h3>
+  <div id="lyricBody" class="lyrics-text">この曲の歌詞はまだ登録されていません。<br>「✎」から、ユーザーさんが用意した歌詞を登録できます。</div>
+  <p style="font-size:11px;color:var(--muted);margin-top:20px">※ 著作権のある歌詞は、ユーザーさん自身が用意したテキストを登録してください。</p>
+ </div>
+ <div class="now" id="now">
+  <h1 id="playerTitle">曲を選択してください</h1><p id="playerArtist">Muguet Music</p>
+  <div class="progress"><span id="elapsed">0:00</span><input id="seek" type="range" min="0" max="100" value="0"><span id="duration">0:00</span></div>
+  <div class="controls"><button class="icon-btn" id="prev" title="前の曲"></button><button class="icon-btn big-play" id="play" title="再生/一時停止"></button><button class="icon-btn" id="next" title="次の曲"></button></div>
+  <div class="subcontrols"><button class="icon-btn" id="shuffle" title="シャッフル"></button><button class="icon-btn" id="repeat" title="順番通りに再生"></button></div>
+  <div class="volume"><span>⌁</span><input id="volume" type="range" min="0" max="1" step=".01" value=".25"><span>♬</span></div>
+  <div class="youtube-player-wrap" id="youtubePlayerWrap" aria-label="YouTube公式プレイヤー">
+    <div class="eyebrow">YOUTUBE</div>
+    <div class="youtube-player-box" id="youtubePlayer"></div>
+    <div class="youtube-note app-ready-note">YouTubeのアプリ内再生にはHTTPS版が必要です。ZIP内のHTMLを直接開いた場合、外部YouTubeへは移動しません。</div>
+  <div class="youtube-note">HTTPS版ではYouTube公式プレイヤーをアプリ内に表示します。初期音量は25%です。曲を開いただけでは再生しません。</div>
+  </div>
+  <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:12px auto 4px">
+    <button class="icon-btn close" id="loadAudioBtn" title="この曲の音源を登録">♫</button>
+    <button class="icon-btn close" id="editLyricsBtn" title="この曲の歌詞を登録">✎</button>
+    <input id="audioFile" type="file" accept="audio/*" hidden>
+  </div>
+  <div class="youtube-register">
+    <input id="youtubeUrl" type="text" inputmode="url" autocomplete="off" spellcheck="false" placeholder="YouTubeのURL または動画ID">
+    <button class="silver-action" id="saveYouTubeBtn" type="button">YouTubeを保存</button>
+  </div>
+  <div id="helperText" style="font-size:11px;color:var(--muted);text-align:center;margin-top:5px">♫ は端末音源、YouTube欄は公式動画を登録できます。同じ曲に両方保存でき、最後に選んだ音源を再生します</div>
+ </div>
+</div>
+
+<div class="settings-modal" id="settingsModal" aria-hidden="true">
+ <section class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+  <div class="settings-head"><div><h2 id="settingsTitle">Muguet Music 設定</h2></div><button type="button" class="settings-close" id="closeSettings" title="設定を閉じる" aria-label="設定を閉じる"></button></div>
+  <div class="settings-section">
+   <h3>困ったとき</h3>
+   <div class="settings-help">
+    <p><strong>YouTubeを使うとき</strong><br>スマホでHTMLファイルを直接開く方法では、YouTubeの埋め込み元情報を送れずAPIエラーになる場合があります。v45ではローカルHTMLではYouTubeの公式ページを別タブで開き、HTTPSで開いた場合は公式IFrame APIでアプリ内再生を試みます。YouTubeの公式仕様でも、埋め込みAPIはHTTP Refererなどの識別情報が必要な場合があると案内されています。</p>
+    <p><strong>画面を消しても聴きたい</strong><br>曲を再生してからスマホの電源ボタンを1回押すと画面が消えます。端末・ブラウザがバックグラウンド再生に対応していれば、音楽は続きます。</p>
+    <p><strong>ロック画面で操作したい</strong><br>対応環境では、ロック画面や通知のメディア操作から再生・一時停止・前後の曲などを操作できます。</p>
+    <p><strong>歌詞を表示したい</strong><br>再生画面のアートワークをタップすると歌詞画面に切り替わります。歌詞は「✎」から自分で登録できます。</p>
+    <p><strong>歌詞をまとめて登録したい</strong><br>「歌詞ファイルを読み込む」から1つのTXTに「【曲名】」見出しで全曲分をまとめるか、TXT / LRCを複数選ぶと曲名を自動照合して登録します。</p>
+    <p><strong>音源を追加したい</strong><br>再生画面の「♫」から端末の音源を登録できます。設定の「音源」では複数ファイルやフォルダをまとめて読み込めます。YouTube欄にはURLまたは動画IDを保存できます。</p>
+   </div>
+  </div>
+  <div class="settings-section">
+   <h3>歌詞</h3>
+   
+<div class="settings-row"><div><strong>音源フォルダをまとめて追加</strong><small>音源が入ったフォルダを1回選ぶだけ。ファイル名と曲名を自動照合します。</small></div><label class="silver-action import-label" for="audioFolderInput">📁 フォルダから追加</label></div>
+<div class="settings-row"><div><strong>登録済み音源を再照合</strong><small>以前の登録で曲と音源が入れ替わっている場合、保存されているファイル名を使って照合します。</small></div><button class="silver-action" id="repairAudioBtn" type="button">再照合</button></div>
+<div class="settings-row"><div><strong>歌詞まとめTXTを読み込む</strong><small>1つのTXTに全曲分をまとめてOK。「【曲名】」の見出しで自動振り分け。従来のTXT / LRC複数選択にも対応。</small></div><label class="silver-action import-label" id="settingsImportLyrics" for="lyricsFilesInput">📂 歌詞を一括追加</label></div>
+   <input id="lyricsFilesInput" type="file" accept=".txt,.lrc,text/plain" multiple style="position:absolute;left:-10000px;width:1px;height:1px;opacity:0">
+   <div id="lyricsImportStatus" class="settings-help" style="margin-top:8px;display:none"></div>
+  </div>
+  <div class="settings-section">
+   <h3>音源</h3>
+   <div class="settings-row"><div><strong>音源ファイルをまとめて追加</strong><small>複数の音源を一度に選べます。ファイル名と曲名を自動照合します。</small></div><label class="silver-action import-label" id="settingsImportAudio" for="audioFilesInput">♫ 複数ファイルから追加</label></div>
+   <div class="settings-row"><div><strong>フォルダごと追加</strong><small>アルバムやアーティストのフォルダを選ぶと、中の音源をまとめて照合します。</small></div><label class="silver-action import-label" id="settingsImportAudioFolder" for="audioFolderInput">📁 フォルダから追加</label></div>
+   <input id="audioFilesInput" type="file" accept="audio/*" multiple hidden>
+<input id="audioFolderInput" type="file" accept="audio/*" webkitdirectory directory multiple hidden>
+
+   
+   <div id="audioImportStatus" class="settings-help" style="margin-top:8px;display:none"></div>
+  </div>
+  <div class="settings-section">
+   <h3>再生</h3>
+   <div class="settings-row"><div><strong>音量</strong><small id="settingsVolumeText">25%</small></div><input id="settingsVolume" type="range" min="0" max="1" step=".01" value=".25" style="max-width:180px"></div>
+   <div class="settings-row"><div><strong>シャッフル</strong><small>曲順をランダムにします</small></div><button class="silver-action" id="settingsShuffle">オフ</button></div>
+   <div class="settings-row"><div><strong>リピート</strong><small>プレイリストの順番で再生します</small></div><button class="silver-action" id="settingsRepeat">オフ</button></div>
+  </div>
+  <div class="settings-section">
+   <h3>ライブラリ・データ</h3>
+   <div class="settings-row"><div><strong>ライブラリをバックアップ</strong><small>曲情報・お気に入り・プレイリストなどをファイルに保存します。</small></div><button class="silver-action" id="settingsBackup">保存</button></div>
+   <div class="settings-row"><div><strong>ライブラリを復元</strong><small>別の端末へ引き継ぐときに使えます。</small></div><button class="silver-action" id="settingsRestore">読み込む</button></div>
+   <div class="settings-row"><div><strong>端末</strong><small id="settingsDeviceLabel"></small></div><span class="eyebrow">DEVICE</span></div>
+  </div>
+  <div class="settings-section">
+   <h3>アプリ</h3>
+   <div class="settings-row"><div><strong>Muguet Musicをホーム画面／アプリとして追加</strong><small>対応ブラウザではインストールボタンから追加できます。</small></div><button class="silver-action" id="settingsInstall">追加</button></div>
+  </div>
+ </section>
+</div>
+
+<audio id="audio" preload="metadata"></audio>
+
+<script>
+/* Storage guard: some file:// and embedded browser contexts deny localStorage.
+   Keep the app UI running even there; persistent storage is used whenever available. */
+const localStorage = (()=>{
+  try { const s=window.localStorage; const k="__mm_test__"; s.setItem(k,"1"); s.removeItem(k); return s; }
+  catch(e){
+    const m=new Map();
+    return {getItem:k=>m.has(String(k))?m.get(String(k)):null,setItem:(k,v)=>m.set(String(k),String(v)),removeItem:k=>m.delete(String(k)),clear:()=>m.clear(),key:i=>Array.from(m.keys())[i]??null,get length(){return m.size}};
+  }
+})();
+</script>
+<script>
+/* Remove duplicate custom releases with the same type/title/artist. */
+(function(){
+  try{
+    const raw=localStorage.getItem("muguetReleases");
+    const releases=JSON.parse(raw||"[]");
+    if(!Array.isArray(releases)) return;
+    const seen=new Set();
+    const keep=[];
+    for(const r of releases){
+      const key=[r.type||"",r.title||"",r.artist||""].join("\u0001");
+      if(seen.has(key)) continue;
+      seen.add(key);
+      keep.push(r);
+    }
+    if(keep.length!==releases.length){
+      localStorage.setItem("muguetReleases",JSON.stringify(keep));
+    }
+  }catch(e){}
+})();
+
+const DATA = {
+"HoneyWorks":["東京スプリングセッション","東京サマーセッション","東京オータムセッション","東京ウインターセッション","線香花火","選んでくれてありがとう。","僕が名前を呼ぶ日","私が恋を知る日","今、恋がはじまれ。","今、恋がはじまれ。-Another story-","愛しちゃってるよ","大嫌いなはずだった。","夢ファンファーレ","初恋の絵本","一分一秒君と僕の"],
+"YOASOBI":["夜に駆ける","群青","アイドル","勇者","あの夢をなぞって","ハルジオン","たぶん","優しい彗星","アンコール","ハルカ","ラブレター","もしも命が描けたら","ツバメ","海のまにまに","ミスター","もう少しだけ","大正浪漫","好きだ","アドベンチャー"],
+"MISAMO":["Confetti","Identity","RUNWAY","Wah Wah Wah","Baby, I'm good","Daydream","Do not touch","Marshmallow","Funny Valentine","Bouquet","Message","NEW LOOK"],
+"TWICE":["TT -Japanese ver.-","I WANT YOU BACK"],
+"JO1":["BE CLASSIC","Be There For You","Bon Voyage","無限大(INFINITY) 2025","飛べるから","WHERE DO WE GO","My Friends","With Us","Handz In My Pocket","Gradation","New Smile","Mad In Love","SuperCali"],
+"SEVENTEEN":["今 -明日 世界が終わっても-","舞い落ちる花びら (Fallin' Flower)","ひとりじゃない","あいのちから","_WORLD","April shower","消費期限","VERY NICE","Power of Love","DREAM","Diamond Days"],
+"Official髭男dism":["I LOVE...","Subtitle","エルダーフラワー","HELLO","宿命","Laughter","Chessboard"],
+"Mrs. GREEN APPLE":["Carrying Happiness","夏の影","familie","アンテナ","lulu."],
+"Snow Man":["Secret Touch","360m","We'll go together","SBY","Dear,","朝の時間","タペストリー","STARS"],
+"BE:FIRST":["夢中","Smile Again","空","Missing"],
+"BUMP OF CHICKEN":["アカシア","なないろ","SOUVENIR"],
+"ClariS":["Fight!!","CheerS","ヒトコト"],
+"LE SSERAFIM":["CRAZY","DIFFERENT"],
+"ENHYPEN":["Bite Me","Sweet Venom"],
+"GENERATIONS":["One in a Million -奇跡の夜に-","Brand New Story"],
+"その他":["Polish","Love so sweet (嵐)","シュガーソングとビターステップ (UNISON SQUARE Garden)","星影のエール (GReeeeN)","道 (EXILE)"]
+};
+const icons={
+home:`<svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>`,
+new:`<svg viewBox="0 0 24 24"><path d="m12 2 1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8z"/><path d="m19 16 .8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg>`,
+bell:`<svg viewBox="0 0 24 24"><path d="M6 9a6 6 0 0 1 12 0c0 7 3 7 3 9H3c0-2 3-2 3-9"/><path d="M10 21h4"/></svg>`,
+user:`<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 21a7 7 0 0 1 14 0"/></svg>`,
+heart:`<svg viewBox="0 0 24 24"><path d="M20.8 8.7c0 5.2-8.8 10.2-8.8 10.2S3.2 13.9 3.2 8.7A4.7 4.7 0 0 1 12 6.4a4.7 4.7 0 0 1 8.8 2.3z"/></svg>`,
+play:`<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M8 5v14l11-7z"/></svg>`,
+pause:`<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M7 5h4v14H7zm6 0h4v14h-4z"/></svg>`,
+prev:`<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M6 5h2v14H6zM19 6.5 10 12l9 5.5z"/></svg>`,
+next:`<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M16 5h2v14h-2zM5 6.5 14 12l-9 5.5z"/></svg>`,
+shuffle:`<svg viewBox="0 0 24 24"><path d="M4 7h3c4 0 6 10 10 10h3"/><path d="m17 14 3 3-3 3"/><path d="M4 17h3c1.6 0 2.7-1.2 3.6-2.8"/><path d="M14.5 9.8C15.3 8.2 16.4 7 18 7h2"/><path d="m17 4 3 3-3 3"/></svg>`,
+repeat:`<svg viewBox="0 0 24 24"><path d="M17 2l3 3-3 3"/><path d="M4 11V9a4 4 0 0 1 4-4h12"/><path d="m7 22-3-3 3-3"/><path d="M20 13v2a4 4 0 0 1-4 4H4"/></svg>`,
+close:`<svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg>`
+};
+const flat=Object.entries(DATA).flatMap(([artist,songs])=>songs.map(title=>({title,artist,audioUrl:"",coverUrl:""})));
+const DEVICE_PROFILE_KEY="muguetDeviceProfile";
+function detectDeviceProfile(){
+  const ua=navigator.userAgent||"";
+  if(/Android/i.test(ua)) return "android-pixel";
+  if(/iPad|Macintosh.*Mobile/i.test(ua)) return "ipad";
+  if(/Windows/i.test(ua)) return "windows-surface";
+  return "web";
+}
+let deviceProfile=detectDeviceProfile();
+try{deviceProfile=localStorage.getItem(DEVICE_PROFILE_KEY)||deviceProfile;localStorage.setItem(DEVICE_PROFILE_KEY,deviceProfile);}catch(e){}
+function getDeviceProfileLabel(){return {"android-pixel":"Android / Pixel",ipad:"iPad", "windows-surface":"Windows / Surface",web:"Web"}[deviceProfile]||"Web";}
+let library=(()=>{
+  try{const saved=JSON.parse(localStorage.getItem("muguetLibrary")||"null");return Array.isArray(saved)?saved:flat;}
+  catch(err){try{localStorage.removeItem("muguetLibrary");}catch(_){}return flat;}
+})();
+
+/* Muguet Music v39: immutable track identity */
+function mm39NewId(){
+  return "trk_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,10);
+}
+function mm39EnsureIds(){
+  if(!Array.isArray(library)) return;
+  library.forEach((t,i)=>{
+    if(!t.trackId){
+      /* Existing tracks keep their old audio key identity, so upgrading does not
+         detach their already-registered audio. New tracks get a fresh ID. */
+      t.trackId = t.audioKey ? ("legacy_"+String(t.audioKey).replace(/[^a-zA-Z0-9_-]/g,"_")) : mm39NewId();
+    }
+  });
+}
+function mm39AudioKey(t){
+  return t && t.trackId ? "audio-"+t.trackId : "";
+}
+
+mm39EnsureIds();
+
+// Normalize the per-track source model without breaking older libraries.
+library.forEach(t=>{
+  if(!t.sourceType) t.sourceType=t.youtubeId?"youtube":(t.audioKey||t.audioUrl?"local":"");
+  if(!t.youtubeId) t.youtubeId="";
+});
+
+
+// Remove accidental duplicate songs (same artist + same title).
+// Prefer the custom/imported entry so release/artwork/audio information is kept.
+(function(){
+  try{
+    const normalize=s=>String(s||"").trim().replace(/\s+/g," ").toLowerCase();
+    const byKey=new Map();
+    for(const t of library){
+      const key=normalize(t.artist)+"\u0001"+normalize(t.title);
+      const prev=byKey.get(key);
+      if(!prev){ byKey.set(key,t); continue; }
+      const prevScore=(prev.custom?8:0)+(prev.audioUrl?4:0)+(prev.coverUrl?2:0)+(prev.releaseId?1:0);
+      const curScore=(t.custom?8:0)+(t.audioUrl?4:0)+(t.coverUrl?2:0)+(t.releaseId?1:0);
+      const keep=curScore>prevScore?t:prev;
+      const other=keep===t?prev:t;
+      // Preserve useful fields from the removed duplicate.
+      for(const k of ["audioUrl","coverUrl","releaseId","releaseTitle","releaseType","releaseDate","artworkKey","favorite","audioKey","sourceType","youtubeId","youtubeUrl"]){
+        if((keep[k]===undefined||keep[k]===null||keep[k]==="") && other[k]!==undefined) keep[k]=other[k];
+      }
+      byKey.set(key,keep);
+    }
+    const cleaned=[...byKey.values()];
+    if(cleaned.length!==library.length){ library=cleaned; localStorage.setItem("muguetLibrary",JSON.stringify(library)); }
+    // This title was removed from the starter library; also clean older saved copies.
+    const withoutPolish=library.filter(t=>String(t.title||"").trim()!=="Polish");
+    const withoutAnarchy=library.filter(t=>String(t.title||"").trim()!=="Anarchy" || String(t.artist||"").trim()!=="Official髭男dism");
+    if(withoutPolish.length!==library.length){ library=withoutPolish; localStorage.setItem("muguetLibrary",JSON.stringify(library)); }
+    if(withoutAnarchy.length!==library.length){ library=withoutAnarchy; localStorage.setItem("muguetLibrary",JSON.stringify(library)); }
+  }catch(e){}
+})();
+
+let currentTab="listen", currentIndex=0, currentList=[], currentTrack=null, playing=false, shuffle=false, repeat=false;
+const audio=document.getElementById("audio"), view=document.getElementById("view");
+const tabs=[["listen","今すぐ聴く","home"],["new","新着","new"],["albums","アルバム","bell"],["artists","アーティスト","user"],["fav","よく聴く","heart"]];
+const save=()=>{mm39EnsureIds();localStorage.setItem("muguetLibrary",JSON.stringify(library));localStorage.setItem("muguetLastSync",new Date().toISOString())};
+// Add the newly requested songs to existing libraries exactly once.
+(function addRequestedSongs(){
+  const requested=[
+    {artist:"Snow Man",title:"Dear,",youtubeId:"oNwT7i2IlbM"},
+    {artist:"Snow Man",title:"朝の時間",youtubeId:"nnOJXt-bX04"},
+    {artist:"Snow Man",title:"タペストリー",youtubeId:""},
+    {artist:"Snow Man",title:"STARS",youtubeId:""},
+    {artist:"JO1",title:"Mad In Love",youtubeId:"SrJPa1KCEqo"},
+    {artist:"JO1",title:"SuperCali",youtubeId:"5nE7budaeO4"},
+    {artist:"TWICE",title:"I WANT YOU BACK",youtubeId:""}
+  ];
+  let changed=false;
+  for(const r of requested){
+    let t=library.find(x=>String(x.artist||"").trim()===r.artist && String(x.title||"").trim()===r.title);
+    if(!t){
+      t={title:r.title,artist:r.artist,audioUrl:"",coverUrl:"",trackId:mm39NewId(),sourceType:r.youtubeId?"youtube":"",youtubeId:r.youtubeId,youtubeUrl:r.youtubeId?`https://www.youtube.com/watch?v=${r.youtubeId}`:""};
+      library.push(t); changed=true;
+    }else if(r.youtubeId && !t.youtubeId){
+      t.youtubeId=r.youtubeId;
+      t.youtubeUrl=`https://www.youtube.com/watch?v=${r.youtubeId}`;
+      if(!t.audioKey && !t.audioUrl && t.youtubeId) t.sourceType="youtube";
+      changed=true;
+    }
+  }
+  if(changed)save();
+})();
+
+normalizeOfficialArtistNames();
+
+// Official artist/release helpers for MISAMO and TWICE.
+(function ensureMisamoTwiceReleaseLinks(){
+  try{
+    const defs=[
+      {id:"r-misamo-play-2026",type:"album",title:"PLAY",artist:"MISAMO",date:"2026-02-04",tracks:["Confetti","Identity","Do not touch","Message"]},
+      {id:"r-misamo-haute-couture-2024",type:"album",title:"HAUTE COUTURE",artist:"MISAMO",date:"2024-11-06",tracks:["Identity","RUNWAY","Wah Wah Wah","Baby, I'm good","Daydream","NEW LOOK"]},
+      {id:"r-twice-twice-2017",type:"album",title:"#TWICE",artist:"TWICE",date:"2017-06-28",tracks:["TT -Japanese ver.-"]}
+    ];
+    let releases=[];
+    try{releases=JSON.parse(localStorage.getItem("muguetReleases")||"[]")}catch(e){releases=[]}
+    if(!Array.isArray(releases))releases=[];
+    let rChanged=false, lChanged=false;
+    for(const d of defs){
+      let r=releases.find(x=>String(x.id||"")===d.id);
+      if(!r){
+        r={id:d.id,type:d.type,title:d.title,artist:d.artist,date:d.date,artworkKey:null};
+        releases.push(r); rChanged=true;
+      }else{
+        for(const [k,v] of Object.entries(d)){
+          if(k==="tracks") continue;
+          if(r[k]!==v){r[k]=v;rChanged=true;}
+        }
+      }
+      for(const title of d.tracks){
+        const t=library.find(x=>x.artist===d.artist && String(x.title||"").trim()===title);
+        if(t && !t.releaseId){
+          t.releaseId=d.id;
+          t.releaseTitle=d.title;
+          t.releaseType=d.type;
+          t.releaseDate=d.date;
+          lChanged=true;
+        }
+      }
+    }
+    if(rChanged)localStorage.setItem("muguetReleases",JSON.stringify(releases));
+    if(lChanged)save();
+  }catch(e){}
+})();
+
+// Register the newly requested songs in the Albums view and keep their Artist groups linked.
+// Existing user library data is preserved; this only adds/updates the matching album records.
+(function ensureRequestedReleaseLinks(){
+  try{
+    const albumDefs=[
+      {
+        id:"r-snowman-best-2020-2025",
+        type:"album",
+        title:"THE BEST 2020 - 2025",
+        artist:"Snow Man",
+        date:"2025-01-22",
+        tracks:["Dear,","朝の時間","タペストリー"]
+      },
+      {
+        id:"r-jo1-equinox",
+        type:"album",
+        title:"EQUINOX",
+        artist:"JO1",
+        date:"2023-09-20",
+        tracks:["Mad In Love","SuperCali"]
+      }
+      ,{
+        id:"r-snowman-stars-2026",
+        type:"single",
+        title:"Digital Single「STARS」",
+        artist:"Snow Man",
+        date:"2026-02-02",
+        tracks:["STARS"]
+      }
+    ];
+    let releases=[];
+    try{releases=JSON.parse(localStorage.getItem("muguetReleases")||"[]")}catch(e){releases=[]}
+    if(!Array.isArray(releases))releases=[];
+    let releaseChanged=false, libraryChanged=false;
+    for(const d of albumDefs){
+      let r=releases.find(x=>String(x.id||"")===d.id);
+      if(!r){
+        r=releases.find(x=>String(x.type||"")==="album" && String(x.title||"").trim()===d.title && String(x.artist||"").trim()===d.artist);
+      }
+      if(!r){
+        r={id:d.id,type:d.type,title:d.title,artist:d.artist,date:d.date,artworkKey:null};
+        releases.push(r); releaseChanged=true;
+      }else{
+        if(r.id!==d.id){r.id=d.id;releaseChanged=true}
+        if(r.type!==d.type){r.type=d.type;releaseChanged=true}
+        if(r.title!==d.title){r.title=d.title;releaseChanged=true}
+        if(r.artist!==d.artist){r.artist=d.artist;releaseChanged=true}
+        if(!r.date){r.date=d.date;releaseChanged=true}
+      }
+      for(const title of d.tracks){
+        const t=library.find(x=>String(x.artist||"").trim()===d.artist && String(x.title||"").trim()===title);
+        if(t && t.releaseId!==d.id){
+          t.releaseId=d.id;
+          t.releaseTitle=d.title;
+          t.releaseType=d.type;
+          t.releaseDate=d.date;
+          libraryChanged=true;
+        }
+      }
+    }
+    if(releaseChanged)localStorage.setItem("muguetReleases",JSON.stringify(releases));
+    if(libraryChanged)save();
+  }catch(e){}
+})();
+
+function exportMuguetLibrary(){
+  const payload={version:1,app:"Muguet Music",deviceProfile,library, releases:(()=>{try{return JSON.parse(localStorage.getItem("muguetReleases")||"[]")}catch(e){return []}})(),favorites:localStorage.getItem("muguetFavorites")||"[]",exportedAt:new Date().toISOString()};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="muguet-music-library-backup.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+function importMuguetLibrary(file){
+  const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(d.app!=="Muguet Music")throw new Error();if(Array.isArray(d.library)){library=d.library;save()}if(Array.isArray(d.releases))localStorage.setItem("muguetReleases",JSON.stringify(d.releases));if(d.favorites)localStorage.setItem("muguetFavorites",d.favorites);renderAll();alert("Muguet Musicのライブラリを復元しました。")}catch(e){alert("バックアップファイルを読み込めませんでした。")}};r.readAsText(file);
+}
+function esc(s){return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function normalizeOfficialArtistNames(){
+  const map={
+    "SnowMan":"Snow Man",
+    "Snow man":"Snow Man",
+    "snow man":"Snow Man",
+    "JO 1":"JO1",
+    "Jo1":"JO1",
+    "jo1":"JO1"
+  };
+  // The old version grouped MISAMO and TWICE together.
+  // Move each title to the official artist name.
+  const misamoTitles=new Set([
+    "Confetti","Identity","RUNWAY","Wah Wah Wah","Baby, I'm good",
+    "Daydream","Do not touch","Marshmallow","Funny Valentine",
+    "Bouquet","Message","NEW LOOK"
+  ]);
+  const twiceTitles=new Set(["TT -Japanese ver.-"]);
+  let changed=false;
+  for(const t of library){
+    const a=String(t.artist||"").trim();
+    if(map[a] && t.artist!==map[a]){
+      t.artist=map[a];
+      changed=true;
+    }
+    if(a==="MISAMO & TWICE"){
+      const title=String(t.title||"").trim();
+      if(misamoTitles.has(title) && t.artist!=="MISAMO"){
+        t.artist="MISAMO";
+        changed=true;
+      }else if(twiceTitles.has(title) && t.artist!=="TWICE"){
+        t.artist="TWICE";
+        changed=true;
+      }
+    }
+  }
+  if(changed)save();
+}
+
+(function ensureTwiceIWantYouBack(){
+  try{
+    const artist="TWICE", title="I WANT YOU BACK", releaseId="r-twice-bdz-2018";
+    let releases=[];
+    try{releases=JSON.parse(localStorage.getItem("muguetReleases")||"[]")}catch(e){}
+    if(!Array.isArray(releases))releases=[];
+    let r=releases.find(x=>String(x.id||"")===releaseId);
+    if(!r){
+      r={id:releaseId,type:"album",title:"BDZ",artist:"TWICE",date:"2018-09-12",artworkKey:null};
+      releases.push(r);
+    }else{
+      r.type="album"; r.title="BDZ"; r.artist="TWICE"; r.date="2018-09-12";
+    }
+    localStorage.setItem("muguetReleases",JSON.stringify(releases));
+    const t=library.find(x=>String(x.artist||"")==="TWICE" && String(x.title||"").trim()===title);
+    if(t){
+      t.releaseId=releaseId;
+      t.releaseTitle="BDZ";
+      t.releaseType="album";
+      t.releaseDate="2018-09-12";
+      save();
+    }
+  }catch(e){}
+})();
+function cover(t){return t.coverUrl?`<img src="${esc(t.coverUrl)}" alt="">`:"♢"}
+function fmt(s){if(!isFinite(s))return"0:00";return Math.floor(s/60)+":"+String(Math.floor(s%60)).padStart(2,"0")}
+function renderNav(){document.getElementById("nav").innerHTML=tabs.map(([id,label,ic])=>`<button class="${currentTab===id?"active":""}" data-tab="${id}">${icons[ic]}<span>${label}</span></button>`).join("")}
+function groupsFor(list){const g={};list.forEach(t=>(g[t.artist]??=[]).push(t));return g}
+function trackHTML(t,i,listId){const idx=library.indexOf(t);return `<div class="track" draggable="true" data-index="${idx}" data-list="${esc(listId)}"><button class="cover" data-play="${idx}">${cover(t)}</button><button style="text-align:left" data-play="${idx}"><strong>${esc(t.title)}</strong><span>${esc(t.artist)}</span></button><div class="track-actions"><button class="icon-btn updown" data-up="${idx}" title="上へ">↑</button><button class="icon-btn updown" data-down="${idx}" title="下へ">↓</button><button class="icon-btn" data-fav="${idx}" title="お気に入り">${t.favorite?"♥":"♡"}</button></div></div>`}
+function renderList(list,listId){const groups=groupsFor(list);return `<div class="groups">${Object.entries(groups).map(([artist,songs])=>{const artistLabel=esc(artist);return `<section class="group"><div class="group-title"><h3>${artistLabel}</h3><span class="count">${songs.length}曲</span></div>${songs.map(t=>trackHTML(t,library.indexOf(t),listId)).join("")}</section>`}).join("")}</div>`}
+
+function getReleases(){
+  try{
+    const releases=JSON.parse(localStorage.getItem("muguetReleases")||"[]");
+    if(!Array.isArray(releases)) return [];
+    const seen=new Set(), out=[];
+    for(const r of releases){
+      const key=[r.type||"",r.title||"",r.artist||""].join("\u0001");
+      if(seen.has(key)) continue;
+      seen.add(key); out.push(r);
+    }
+    if(out.length!==releases.length) localStorage.setItem("muguetReleases",JSON.stringify(out));
+    return out;
+  }catch(e){return []}
+}
+
+/* Reliable artwork editor */
+let artworkEditingRelease=null, artworkEditingBlob=null, artworkEditingPreviewUrl=null;
+
+function openArtworkEditor(releaseId){
+  const releases=getReleases();
+  const r=releases.find(x=>x.id===releaseId);
+  if(!r)return;
+  artworkEditingRelease=r;
+  artworkEditingBlob=null;
+  if(artworkEditingPreviewUrl)URL.revokeObjectURL(artworkEditingPreviewUrl);
+  artworkEditingPreviewUrl=null;
+  document.getElementById("artworkEditorTitle").textContent=`「${r.title}」のアートワークを変更`;
+  document.getElementById("artworkSavedMessage").textContent="";
+  document.getElementById("artworkEditorPreview").innerHTML="<span>ARTWORK</span>";
+  if(r.artworkKey){
+    rmGet(r.artworkKey).then(blob=>{
+      if(blob && artworkEditingRelease===r){
+        artworkEditingPreviewUrl=URL.createObjectURL(blob);
+        document.getElementById("artworkEditorPreview").innerHTML=`<img src="${artworkEditingPreviewUrl}" alt="">`;
+      }
+    }).catch(()=>{});
+  }
+  document.getElementById("artworkEditor").classList.add("open");
+  document.getElementById("artworkEditor").setAttribute("aria-hidden","false");
+}
+function closeArtworkEditor(){
+  document.getElementById("artworkEditor").classList.remove("open");
+  document.getElementById("artworkEditor").setAttribute("aria-hidden","true");
+  if(artworkEditingPreviewUrl)URL.revokeObjectURL(artworkEditingPreviewUrl);
+  artworkEditingPreviewUrl=null;artworkEditingRelease=null;artworkEditingBlob=null;
+}
+document.getElementById("artworkPickBtn").onclick=()=>document.getElementById("artworkEditorFile").click();
+document.getElementById("artworkEditorFile").onchange=e=>{
+  const f=e.target.files&&e.target.files[0]; if(!f)return;
+  artworkEditingBlob=f;
+  if(artworkEditingPreviewUrl)URL.revokeObjectURL(artworkEditingPreviewUrl);
+  artworkEditingPreviewUrl=URL.createObjectURL(f);
+  document.getElementById("artworkEditorPreview").innerHTML=`<img src="${artworkEditingPreviewUrl}" alt="">`;
+  document.getElementById("artworkSavedMessage").textContent="新しい画像を選択しました。";
+  e.target.value="";
+};
+document.getElementById("artworkSaveBtn").onclick=async()=>{
+  if(!artworkEditingRelease||!artworkEditingBlob)return;
+  const r=artworkEditingRelease;
+  const key=r.artworkKey||("art-"+r.id);
+  await rmPut(key,artworkEditingBlob);
+  const releases=getReleases();
+  const saved=releases.find(x=>x.id===r.id);
+  if(saved)saved.artworkKey=key;
+  localStorage.setItem("muguetReleases",JSON.stringify(releases));
+  library.forEach(t=>{if(t.releaseId===r.id)t.artworkKey=key});
+  save();
+
+  // Immediately update the visible card.
+  const card=document.querySelector(`[data-release-id="${CSS.escape(r.id)}"] [data-release-art]`);
+  if(card){
+    const u=URL.createObjectURL(artworkEditingBlob);
+    card.innerHTML=`<img src="${u}" alt="アートワーク">`;
+  }
+  // If this release is currently playing, update the player immediately too.
+  if(currentTrack && currentTrack.releaseId===r.id){
+    const u=URL.createObjectURL(artworkEditingBlob);
+    document.getElementById("miniCover").innerHTML=`<img src="${u}" style="width:100%;height:100%;object-fit:cover" alt="">`;
+    document.getElementById("art").innerHTML=`<img src="${u}" style="width:100%;height:100%;object-fit:cover;border-radius:18px" alt="">`;
+  }
+  document.getElementById("artworkSavedMessage").textContent="保存しました。アートワークを更新しました。";
+  setTimeout(closeArtworkEditor,500);
+};
+document.getElementById("artworkCancelBtn").onclick=closeArtworkEditor;
+document.getElementById("artworkEditor").onclick=e=>{if(e.target.id==="artworkEditor")closeArtworkEditor()};
+
+
+function renderReleaseLibrary(){
+  const releases=getReleases();
+  if(!releases.length)return '<div class="empty"><p>まだアルバム／シングルがありません。</p><button class="silver-action" onclick="openReleaseModal()">＋ 追加する</button></div>';
+  return `<div class="release-library">${releases.map(r=>`
+    <article class="release-card" data-release-id="${esc(r.id)}">
+      <div class="release-card-art" data-release-art="${esc(r.artworkKey||"")}"><span>ARTWORK</span></div>
+      <h3>${esc(r.title)}</h3><p>${esc(r.artist)} · ${r.type==="single"?"シングル":"アルバム"}</p>
+      <div class="release-card-actions"><button class="silver-action" data-edit-art="${esc(r.id)}">🖼 アートワークを変更</button><button class="silver-action" data-release-play="${esc(r.id)}">▶ 再生</button></div>
+    </article>`).join("")}</div>`;
+}
+async function refreshReleaseArtwork(){
+  document.querySelectorAll("[data-release-art]").forEach(async el=>{
+    const key=el.dataset.releaseArt;if(!key)return;
+    try{const blob=await rmGet(key);if(blob){const u=URL.createObjectURL(blob);el.innerHTML=`<img src="${u}" alt="アートワーク">`}}catch(e){}
+  });
+}
+function bindReleaseLibrary(){
+  refreshReleaseArtwork();
+  document.querySelectorAll("[data-edit-art]").forEach(btn=>btn.onclick=()=>openArtworkEditor(btn.dataset.editArt));
+  document.querySelectorAll("[data-release-play]").forEach(btn=>btn.onclick=()=>{
+    const r=getReleases().find(x=>x.id===btn.dataset.releasePlay);if(!r)return;
+    const idx=library.findIndex(t=>t.releaseId===r.id);if(idx>=0)selectPlay(idx);
+  });
+}
+function setView(){renderNav();let list=library;let title="最近聴いた曲",sub="あなたの音楽時間を、楽しく。";if(currentTab==="new"){title="新着";sub="最近追加した音楽";list=library.slice(-30).reverse()}if(currentTab==="fav"){title="よく聴く";sub="お気に入りの曲を並べ替えられます";list=library.filter(x=>x.favorite)}if(currentTab==="albums"){title="アルバム";sub="登録したアルバム・シングルのアートワーク"}if(currentTab==="artists"){title="アーティスト";sub="すべての曲をアーティスト別に表示"}if(currentTab==="listen"){list=library.slice(0,30)}
+let body=currentTab==="albums"?renderReleaseLibrary():renderList(list,currentTab);
+const eyebrowLabel=currentTab==="fav"?"FAVORITE":currentTab.toUpperCase();
+view.innerHTML=`<div class="hero"><div><div class="eyebrow">${eyebrowLabel}</div><h2>${title}</h2><p>${sub} · ${library.length}曲</p></div><input class="search" id="search" placeholder="曲名・アーティストを検索"></div>${body}`;
+bindView();if(currentTab==="albums")bindReleaseLibrary();if(currentTab==="listen")document.getElementById("search").focus()}
+function bindView(){document.querySelectorAll("[data-play]").forEach(b=>b.onclick=()=>selectPlay(+b.dataset.play));document.querySelectorAll("[data-fav]").forEach(b=>b.onclick=e=>{e.stopPropagation();library[+b.dataset.fav].favorite=!library[+b.dataset.fav].favorite;save();setView()});document.querySelectorAll("[data-up]").forEach(b=>b.onclick=e=>{e.stopPropagation();move(+b.dataset.up,-1)});document.querySelectorAll("[data-down]").forEach(b=>b.onclick=e=>{e.stopPropagation();move(+b.dataset.down,1)});document.querySelectorAll(".track").forEach(row=>{row.ondragstart=e=>e.dataTransfer.setData("text/plain",row.dataset.index);row.ondragover=e=>e.preventDefault();row.ondrop=e=>{e.preventDefault();const from=+e.dataTransfer.getData("text/plain"),to=+row.dataset.index;if(from!==to){const x=library.splice(from,1)[0];library.splice(to,0,x);save();setView()}}});const s=document.getElementById("search");s.oninput=()=>{const q=s.value.toLowerCase();document.querySelectorAll(".group").forEach(g=>{let visible=0;g.querySelectorAll(".track").forEach(r=>{const ok=r.innerText.toLowerCase().includes(q);r.style.display=ok?"grid":"none";if(ok)visible++});g.style.display=visible?"block":"none"})}}
+function move(i,d){const j=i+d;if(j<0||j>=library.length)return;[library[i],library[j]]=[library[j],library[i]];save();setView()}
+
+
+/* Album / single + artwork manager */
+const RM_DB="muguetReleaseDB", RM_STORE="artwork"; let pendingArtworkBlob=null,pendingArtworkUrl=null;
+function rmOpenDB(){return new Promise((res,rej)=>{const q=indexedDB.open(RM_DB,1);q.onupgradeneeded=()=>{if(!q.result.objectStoreNames.contains(RM_STORE))q.result.createObjectStore(RM_STORE)};q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)})}
+async function rmPut(k,b){const db=await rmOpenDB();return new Promise((res,rej)=>{const t=db.transaction(RM_STORE,"readwrite");t.objectStore(RM_STORE).put(b,k);t.oncomplete=res;t.onerror=()=>rej(t.error)})}
+async function rmGet(k){const db=await rmOpenDB();return new Promise((res,rej)=>{const q=db.transaction(RM_STORE).objectStore(RM_STORE).get(k);q.onsuccess=()=>res(q.result||null);q.onerror=()=>rej(q.error)})}
+function addTrackRow(title=""){const box=document.getElementById("trackRows"),r=document.createElement("div");r.className="track-row";r.innerHTML='<div class="track-no"></div><label>曲名<input class="new-track-title" placeholder="曲名"></label><button class="track-remove">×</button>';r.querySelector("input").value=title;r.querySelector(".track-remove").onclick=()=>{r.remove();renumberRows()};box.appendChild(r);renumberRows()}
+function renumberRows(){document.querySelectorAll("#trackRows .track-row").forEach((r,i)=>r.querySelector(".track-no").textContent=i+1)}
+function resetReleaseForm(){document.getElementById("releaseType").value="album";document.getElementById("releaseTitle").value="";document.getElementById("releaseArtist").value="";document.getElementById("releaseDate").value="";document.getElementById("trackRows").innerHTML="";addTrackRow();pendingArtworkBlob=null;if(pendingArtworkUrl)URL.revokeObjectURL(pendingArtworkUrl);pendingArtworkUrl=null;document.getElementById("artworkPreview").innerHTML="<span>ARTWORK</span>"}
+function openReleaseModal(){resetReleaseForm();document.getElementById("releaseModal").classList.add("open")}
+function closeReleaseModal(){document.getElementById("releaseModal").classList.remove("open")}
+document.getElementById("addReleaseBtn").onclick=openReleaseModal;document.getElementById("closeReleaseBtn").onclick=closeReleaseModal;document.getElementById("cancelReleaseBtn").onclick=closeReleaseModal;document.getElementById("addTrackRowBtn").onclick=()=>addTrackRow();
+document.getElementById("chooseArtworkBtn").onclick=()=>document.getElementById("artworkFile").click();
+document.getElementById("artworkFile").onchange=e=>{const f=e.target.files&&e.target.files[0];if(!f)return;pendingArtworkBlob=f;if(pendingArtworkUrl)URL.revokeObjectURL(pendingArtworkUrl);pendingArtworkUrl=URL.createObjectURL(f);document.getElementById("artworkPreview").innerHTML='<img src="'+pendingArtworkUrl+'" alt="アートワーク">';e.target.value=""};
+document.getElementById("saveReleaseBtn").onclick=async()=>{const type=document.getElementById("releaseType").value,title=document.getElementById("releaseTitle").value.trim(),artist=document.getElementById("releaseArtist").value.trim()||"Unknown Artist",date=document.getElementById("releaseDate").value,titles=[...document.querySelectorAll(".new-track-title")].map(x=>x.value.trim()).filter(Boolean);if(!title){alert("タイトルを入力してください");return}if(!titles.length){alert("収録曲を1曲以上追加してください");return}const id="r-"+Date.now(),artKey=pendingArtworkBlob?"art-"+id:null;if(pendingArtworkBlob)await rmPut(artKey,pendingArtworkBlob);let releases=[];try{releases=JSON.parse(localStorage.getItem("muguetReleases")||"[]")}catch(e){}releases.push({id,type,title,artist,date,artworkKey:artKey});localStorage.setItem("muguetReleases",JSON.stringify(releases));titles.forEach(t=>{const track={title:t,artist,audioUrl:"",coverUrl:"",custom:true,releaseId:id,releaseTitle:title,releaseType:type,releaseDate:date,artworkKey:artKey,sourceType:"",youtubeId:""};track.trackId=mm39NewId();library.push(track)});save();closeReleaseModal();if(typeof renderAll==="function")renderAll();alert("ライブラリに追加しました。")};
+document.getElementById("releaseModal").onclick=e=>{if(e.target.id==="releaseModal")closeReleaseModal()};
+
+const DB_NAME="muguetMusicDB", DB_VERSION=1, AUDIO_STORE="audio";
+function openAudioDB(){
+  return new Promise((resolve,reject)=>{
+    const req=indexedDB.open(DB_NAME,DB_VERSION);
+    req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains(AUDIO_STORE))req.result.createObjectStore(AUDIO_STORE)};
+    req.onsuccess=()=>resolve(req.result); req.onerror=()=>reject(req.error);
+  });
+}
+async function saveAudioBlob(key,blob){
+  const db=await openAudioDB();
+  return new Promise((resolve,reject)=>{const tx=db.transaction(AUDIO_STORE,"readwrite");tx.objectStore(AUDIO_STORE).put(blob,key);tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error)});
+}
+async function getAudioBlob(key){
+  const db=await openAudioDB();
+  return new Promise((resolve,reject)=>{const tx=db.transaction(AUDIO_STORE,"readonly");const r=tx.objectStore(AUDIO_STORE).get(key);r.onsuccess=()=>resolve(r.result||null);r.onerror=()=>reject(r.error)});
+}
+async function attachAudioForCurrent(file){
+  if(!currentTrack)return;
+  mm39EnsureIds();
+  const key=mm39AudioKey(currentTrack);
+  await saveAudioBlob(key,file);
+  currentTrack.audioKey=key;
+  currentTrack.audioName=file.name;
+  currentTrack.sourceType="local";
+  // Keep a saved YouTube URL too; the user can switch this track back to YouTube later.
+  save();
+  await loadCurrentAudio();
+}
+function normalizeAudioMatchName(name){
+  return String(name||"")
+    .replace(/\.[^.]+$/g,"")
+    .replace(/^\s*\d{1,3}[\s._-]+/g,"")
+    .replace(/\u3000/g," ")
+    .replace(/[「」『』【】\[\]（）()]/g," ")
+    .replace(/\s+/g," ")
+    .trim().toLowerCase();
+}
+function findTrackForAudioFile(file){
+  const base=normalizeAudioMatchName(file.name);
+  const paths=String(file.webkitRelativePath||"").split("/").filter(Boolean).map(normalizeAudioMatchName);
+  const names=new Set([base]);
+  const folders=paths.slice(0,-1);
+  folders.forEach(folder=>{if(folder){names.add(base+" "+folder);names.add(folder+" "+base)}});
+  const exact=[];
+  const titleOnly=[];
+  library.forEach((t,i)=>{
+    const title=normalizeAudioMatchName(t.title);
+    const artist=normalizeAudioMatchName(t.artist);
+    const patterns=[title,artist+" "+title,title+" "+artist];
+    if(patterns.some(x=>names.has(x))) exact.push(i);
+    else if(names.has(title)) titleOnly.push(i);
+  });
+  const pool=exact.length?exact:titleOnly;
+  return pool.length===1?pool[0]:-1;
+}
+async function importAudioFiles(files){
+  const audioExt=/\.(mp3|m4a|aac|wav|flac|ogg|oga|opus|wma|aiff|aif|3gp|amr)$/i;
+  const list=[...files].filter(f=>(f.type||"").startsWith("audio/") || audioExt.test(f.name||""));
+  const status=document.getElementById("audioImportStatus");
+  status.style.display="block";
+  if(!list.length){status.textContent="音源ファイルが見つかりませんでした。";return}
+  mm39EnsureIds();
+  let added=0,unmatched=0,ambiguous=0;
+  for(const file of list){
+    const idx=findTrackForAudioFile(file);
+    if(idx<0){
+      const base=normalizeAudioMatchName(file.name);
+      const possible=library.filter(t=>{
+        const title=normalizeAudioMatchName(t.title);
+        return title && (base.includes(title)||title.includes(base));
+      });
+      if(possible.length>1) ambiguous++; else unmatched++;
+      continue;
+    }
+    const track=library[idx];
+    const key=mm39AudioKey(track);
+    await saveAudioBlob(key,file);
+    track.audioKey=key;
+    track.audioName=file.name;
+    track.sourceType="local";
+    // Do not erase a YouTube link already registered for this same track.
+    added++;
+  }
+  save();
+  const notes=[];
+  if(unmatched)notes.push("未照合 "+unmatched+"件");
+  if(ambiguous)notes.push("候補が複数 "+ambiguous+"件");
+  status.textContent=added+"件の音源を登録しました。"+(notes.length?"（"+notes.join("・")+"）":"");
+  setView();
+}
+function isYouTubeTrack(t=currentTrack){
+  return !!(t && /^[A-Za-z0-9_-]{11}$/.test(String(t.youtubeId||"")) &&
+    (t.sourceType==="youtube" || !t.audioKey&&!t.audioUrl));
+}
+function extractYouTubeVideoId(value){
+  const raw=String(value||"").trim();
+  if(!raw)return "";
+  if(/^[A-Za-z0-9_-]{11}$/.test(raw))return raw;
+  try{
+    const u=new URL(raw);
+    const host=u.hostname.replace(/^www\./,"").toLowerCase();
+    if(host==="youtu.be"){
+      const id=u.pathname.split("/").filter(Boolean)[0]||"";
+      return /^[A-Za-z0-9_-]{11}$/.test(id)?id:"";
+    }
+    if(host.endsWith("youtube.com")||host==="youtube-nocookie.com"){
+      const v=u.searchParams.get("v");
+      if(v&&/^[A-Za-z0-9_-]{11}$/.test(v))return v;
+      const parts=u.pathname.split("/").filter(Boolean);
+      const marker=parts[0];
+      if(["embed","shorts","live","v"].includes(marker)&&/^[A-Za-z0-9_-]{11}$/.test(parts[1]||""))return parts[1];
+    }
+  }catch(e){}
+  const m=raw.match(/(?:v=|youtu\.be\/|youtube\.com\/(?:embed|shorts|live)\/)([A-Za-z0-9_-]{11})/i);
+  return m?m[1]:"";
+}
+
+
+let ytPlayer=null;
+let ytApiReady=false;
+let ytPendingVideoId="";
+let ytTimeTimer=null;
+let ytApiLoadTimer=null;
+let ytIframeCreated=false;
+
+function setYouTubeWrap(visible){
+  const wrap=document.getElementById("youtubePlayerWrap");
+  if(wrap)wrap.classList.toggle("visible",!!visible);
+}
+function youtubeStatus(msg){
+  if(ytApiLoadTimer){clearTimeout(ytApiLoadTimer);ytApiLoadTimer=null}
+  const el=document.getElementById("helperText");
+  if(el)el.textContent=msg;
+}
+function clearLocalAudio(){
+  audio.pause();
+  audio.removeAttribute("src");
+  audio.load();
+  if(window.__muguetAudioUrl){
+    URL.revokeObjectURL(window.__muguetAudioUrl);
+    window.__muguetAudioUrl=null;
+  }
+}
+function pauseYouTube(){
+  try{if(ytPlayer&&typeof ytPlayer.pauseVideo==="function")ytPlayer.pauseVideo()}catch(e){}
+}
+function stopOtherPlayerForYouTube(){ clearLocalAudio(); }
+
+function getYouTubeOrigin(){
+  return /^https?:$/.test(location.protocol)?location.origin:"";
+}
+
+function getYouTubeEmbedUrl(videoId){
+  const params=new URLSearchParams({
+    enablejsapi:"1",
+    playsinline:"1",
+    rel:"0",
+    controls:"1"
+  });
+  const origin=getYouTubeOrigin();
+  if(origin)params.set("origin",origin);
+  return "https://www.youtube.com/embed/"+encodeURIComponent(videoId)+"?"+params.toString();
+}
+
+function createYouTubeIframe(videoId){
+  const box=document.getElementById("youtubePlayer");
+  if(!box||!videoId)return null;
+  box.innerHTML="";
+  ytIframeCreated=false;
+
+  // file:// ではYouTube埋め込みの動作が不安定なため、
+  // 外部YouTubeへ勝手に移動せず、HTTPS公開が必要なことを案内する。
+  if(location.protocol==="file:"){
+    const card=document.createElement("div");
+    card.className="youtube-local-card";
+    card.innerHTML=`<div class="youtube-local-placeholder" aria-hidden="true">♫</div><div style="position:absolute;z-index:2;left:10px;right:10px;bottom:12px;text-align:center;color:#31453d;background:rgba(255,255,255,.94);border-radius:12px;padding:9px;font-size:11px;line-height:1.5">YouTubeをアプリ内で再生するには<br>HTTPS版の公開が必要です</div>`;
+    box.appendChild(card);
+    return null;
+  }
+
+  const iframe=document.createElement("iframe");
+  iframe.id="muguetYouTubeIframe";
+  iframe.width="200";
+  iframe.height="200";
+  iframe.title="YouTube";
+  iframe.allow="autoplay; encrypted-media; picture-in-picture";
+  iframe.allowFullscreen=true;
+  iframe.referrerPolicy="strict-origin-when-cross-origin";
+  iframe.src=getYouTubeEmbedUrl(videoId);
+  box.appendChild(iframe);
+  ytIframeCreated=true;
+  return iframe;
+}
+
+function initYouTubePlayer(){
+  if(location.protocol==="file:")return;
+  if(ytPlayer||!window.YT)return;
+  const iframe=document.getElementById("muguetYouTubeIframe") || createYouTubeIframe(currentTrack?.youtubeId);
+  if(!iframe)return;
+
+  try{
+    ytPlayer=new YT.Player(iframe,{
+      events:{
+        onReady:event=>{
+          ytApiReady=true;
+          clearTimeout(ytApiLoadTimer);
+          try{event.target.setVolume(Math.min(25,Number(document.getElementById("volume").value)*100))}catch(e){}
+          const id=ytPendingVideoId || currentTrack?.youtubeId;
+          ytPendingVideoId="";
+          if(id && currentTrack && isYouTubeTrack(currentTrack)){
+            try{event.target.loadVideoById(id)}catch(e){}
+          }
+          youtubeStatus("YouTubeプレイヤーの準備ができました。");
+        },
+        onStateChange:event=>{
+          const state=event.data;
+          if(state===YT.PlayerState.PLAYING){
+            playing=true;startYouTubeTicker();syncControls();updateMediaSession();
+            if("mediaSession" in navigator)navigator.mediaSession.playbackState="playing";
+          }else if(state===YT.PlayerState.PAUSED){
+            playing=false;stopYouTubeTicker();syncControls();updateMediaSession();
+            if("mediaSession" in navigator)navigator.mediaSession.playbackState="paused";
+          }else if(state===YT.PlayerState.ENDED){
+            playing=false;stopYouTubeTicker();syncControls();
+            repeat?selectPlay(currentIndex):next(1);
+          }else if(state===YT.PlayerState.BUFFERING){
+            startYouTubeTicker();
+          }
+        },
+        onError:event=>{
+          playing=false;stopYouTubeTicker();syncControls();
+          const map={
+            2:"YouTubeの動画IDが不正です。",
+            5:"この動画はHTML5埋め込み再生に対応していない可能性があります。",
+            100:"動画が見つからないか、非公開です。",
+            101:"投稿者が埋め込み再生を許可していません。",
+            150:"投稿者が埋め込み再生を許可していません。",
+            153:"このファイルをChromeで直接開いているため、YouTubeが埋め込み元を確認できない可能性があります。HTTPSまたはlocalhostで開くとAPI連動が安定します。"
+          };
+          youtubeStatus(map[event.data]||"YouTube動画を再生できませんでした。");
+        },
+        onAutoplayBlocked:()=>{
+          playing=false;syncControls();
+          youtubeStatus("自動再生が止められました。Muguet Musicの再生ボタンを押してください。");
+        }
+      }
+    });
+  }catch(e){
+    ytPlayer=null;
+    youtubeStatus("YouTubeプレイヤーを準備できませんでした。動画枠から再生できます。");
+  }
+}
+
+window.onYouTubeIframeAPIReady=()=>{
+  ytApiReady=true;
+  initYouTubePlayer();
+};
+
+// YouTube APIは起動時・曲選択時には読み込まない。
+// 再生ボタンを押したときだけ読み込む。
+
+function queueYouTubeVideo(videoId){
+  ytPendingVideoId=videoId||"";
+  if(location.protocol==="file:"){
+    setYouTubeWrap(true);
+    createYouTubeIframe(videoId);
+    youtubeStatus("YouTubeリンクは登録済みです。アプリ内再生にはHTTPS版が必要です。今は外部YouTubeへ移動しません。");
+    return;
+  }
+  setYouTubeWrap(true);
+  createYouTubeIframe(videoId);
+  ytApiLoadTimer=setTimeout(()=>{
+    if(!ytApiReady){
+      if(/^file:$/.test(location.protocol)){
+        youtubeStatus("YouTube動画を表示しています。ローカルHTMLではAPI連動が制限される場合があります。");
+      }else{
+        youtubeStatus("YouTubeの読み込みに時間がかかっています。少し待つか、再生ボタンを押してください。");
+      }
+    }
+  },8000);
+  if(location.protocol!=="file:" && window.YT && window.YT.Player) initYouTubePlayer();
+}
+
+function startYouTubeTicker(){
+  if(ytTimeTimer)return;
+  ytTimeTimer=setInterval(()=>{
+    if(!ytPlayer||!isYouTubeTrack())return;
+    try{
+      const duration=Number(ytPlayer.getDuration()||0);
+      const current=Number(ytPlayer.getCurrentTime()||0);
+      if(duration>0){
+        document.getElementById("seek").value=current/duration*100;
+        document.getElementById("elapsed").textContent=fmt(current);
+        document.getElementById("duration").textContent=fmt(duration);
+        if("mediaSession" in navigator&&"setPositionState" in navigator.mediaSession){
+          try{navigator.mediaSession.setPositionState({duration,playbackRate:1,position:Math.min(current,duration)})}catch(e){}
+        }
+      }
+    }catch(e){}
+  },250);
+}
+function stopYouTubeTicker(){
+  if(ytTimeTimer){clearInterval(ytTimeTimer);ytTimeTimer=null}
+}
+
+async function mm39MigrateLegacyAudio(){
+  try{
+    mm39EnsureIds();
+    let changed=false;
+    for(const t of library){
+      if(!t.audioKey) continue;
+      const oldKey=t.audioKey;
+      const stable=mm39AudioKey(t);
+      if(oldKey===stable) continue;
+      const blob=await getAudioBlob(oldKey);
+      if(blob){
+        await saveAudioBlob(stable,blob);
+        t.audioKey=stable;
+        changed=true;
+      }
+    }
+    if(changed)save();
+  }catch(e){}
+}
+
+mm39MigrateLegacyAudio();
+async function loadCurrentAudio(){
+  if(!currentTrack)return false;
+  if(isYouTubeTrack(currentTrack))return false;
+  if(currentTrack.audioKey){
+    const blob=await getAudioBlob(currentTrack.audioKey);
+    if(blob){
+      if(window.__muguetAudioUrl)URL.revokeObjectURL(window.__muguetAudioUrl);
+      window.__muguetAudioUrl=URL.createObjectURL(blob);
+      audio.src=window.__muguetAudioUrl;
+      audio.load();
+      return true;
+    }
+  }
+  if(currentTrack.audioUrl){audio.src=currentTrack.audioUrl;audio.load();return true}
+  audio.removeAttribute("src");audio.load();return false;
+}
+function loadLyricsForCurrent(){
+  document.getElementById("lyricBody").textContent=currentTrack?.lyrics||"この曲の歌詞はまだ登録されていません。\\n「✎」から、ユーザーさんが用意した歌詞を登録できます。";
+}
+function updateSourceInputs(){
+  const input=document.getElementById("youtubeUrl");
+  if(!input)return;
+  input.value=currentTrack?.youtubeId?`https://www.youtube.com/watch?v=${currentTrack.youtubeId}`:"";
+}
+async function selectPlay(i){
+  currentTrack=library[i];currentIndex=i;currentList=library;
+  document.getElementById("miniTitle").textContent=currentTrack.title;
+  document.getElementById("miniArtist").textContent=currentTrack.artist;
+  document.getElementById("playerTitle").textContent=currentTrack.title;
+  document.getElementById("playerArtist").textContent=currentTrack.artist;
+  document.getElementById("lyricTitle").textContent=currentTrack.title;
+  document.getElementById("miniCover").innerHTML=cover(currentTrack);
+  document.getElementById("art").innerHTML=cover(currentTrack);
+  updateSourceInputs();
+  if(currentTrack.artworkKey){rmGet(currentTrack.artworkKey).then(b=>{if(b){const u=URL.createObjectURL(b);document.getElementById("miniCover").innerHTML='<img src="'+u+'" style="width:100%;height:100%;object-fit:cover">';document.getElementById("art").innerHTML='<img src="'+u+'" style="width:100%;height:100%;object-fit:cover;border-radius:18px">'}}).catch(()=>{})}
+  loadLyricsForCurrent();
+  openPlayer();
+
+  if(isYouTubeTrack(currentTrack)){
+    stopOtherPlayerForYouTube();
+    playing=false;
+    setYouTubeWrap(false);
+    // 曲を開いただけではYouTubeへ接続しない。再生操作まで完全に待機。
+    youtubeStatus("YouTubeの曲です。再生ボタンを押すと再生します。");
+  }else{
+    setYouTubeWrap(false);
+    pauseYouTube();
+    const hasAudio=await loadCurrentAudio();
+    if(hasAudio){
+      playing=true;
+      audio.play().catch(()=>{playing=false;syncControls()});
+    }else{
+      playing=false;
+      const helper=document.getElementById("helperText");
+      if(helper) helper.textContent="この曲にはまだ音源が登録されていません。「YouTube URL」または「音源を登録」から追加できます。";
+    }
+    syncControls();
+  }
+  updateMediaSession();
+}
+function syncControls(){const html=playing?icons.pause:icons.play;["play","miniPlay","headerPlay"].forEach(id=>document.getElementById(id).innerHTML=html)}
+async function togglePlay(){
+  if(!currentTrack){await selectPlay(0);return}
+  if(isYouTubeTrack(currentTrack)){
+    if(location.protocol==="file:"){
+      playing=false;
+      syncControls();
+      setYouTubeWrap(true);
+      createYouTubeIframe(currentTrack.youtubeId);
+      youtubeStatus("リンクは登録されています。外部YouTubeへは移動しません。アプリ内再生にはHTTPS版の公開が必要です。");
+      return;
+    }
+    if(!ytPlayer||!ytApiReady){
+      queueYouTubeVideo(currentTrack.youtubeId);
+      youtubeStatus("YouTube動画を読み込んでいます…");
+      return;
+    }
+    setYouTubeWrap(true);
+    try{
+      const state=ytPlayer.getPlayerState();
+      if(state===YT.PlayerState.PLAYING||state===YT.PlayerState.BUFFERING){ytPlayer.pauseVideo()}else{ytPlayer.playVideo()}
+    }catch(e){}
+    return;
+  }
+  if(!audio.src && currentTrack.audioKey)await loadCurrentAudio();
+  if(audio.src){if(audio.paused){await audio.play().catch(()=>{});playing=!audio.paused}else{audio.pause();playing=false}}
+  syncControls();updateMediaSession()
+}
+function next(dir=1){if(!currentTrack)return;let ni;if(shuffle)ni=Math.floor(Math.random()*library.length);else ni=(currentIndex+dir+library.length)%library.length;selectPlay(ni)}
+let mediaArtworkObjectUrl=null;
+async function updateMediaSession(){
+  if(!("mediaSession" in navigator)||!currentTrack)return;
+  try{
+    if(mediaArtworkObjectUrl){URL.revokeObjectURL(mediaArtworkObjectUrl);mediaArtworkObjectUrl=null}
+    let artwork=undefined;
+    if(currentTrack.artworkKey){
+      const b=await rmGet(currentTrack.artworkKey);
+      if(b){mediaArtworkObjectUrl=URL.createObjectURL(b);artwork=[{src:mediaArtworkObjectUrl,sizes:"512x512",type:b.type||"image/png"}]}
+    }else if(currentTrack.coverUrl){artwork=[{src:currentTrack.coverUrl,sizes:"512x512"}]}
+    navigator.mediaSession.metadata=new MediaMetadata({title:currentTrack.title,artist:currentTrack.artist,album:currentTrack.releaseTitle||"Muguet Music",artwork});
+    navigator.mediaSession.playbackState=playing?"playing":"paused";
+    const safe=(action,handler)=>{try{navigator.mediaSession.setActionHandler(action,handler)}catch(e){}};
+    safe("play",async()=>{
+      if(isYouTubeTrack(currentTrack))ytPlayer?.playVideo();
+      else{if(!audio.src&&currentTrack.audioKey)await loadCurrentAudio();await audio.play().catch(()=>{})}
+    });
+    safe("pause",()=>{if(isYouTubeTrack(currentTrack))ytPlayer?.pauseVideo();else audio.pause()});
+    safe("previoustrack",()=>next(-1));
+    safe("nexttrack",()=>next(1));
+    safe("seekbackward",d=>{
+      if(isYouTubeTrack(currentTrack)&&ytPlayer){const t=Math.max(0,(ytPlayer.getCurrentTime()||0)-(d.seekOffset||10));ytPlayer.seekTo(t,true)}
+      else audio.currentTime=Math.max(0,audio.currentTime-(d.seekOffset||10));
+    });
+    safe("seekforward",d=>{
+      if(isYouTubeTrack(currentTrack)&&ytPlayer){const dur=ytPlayer.getDuration()||Infinity;const t=Math.min(dur,(ytPlayer.getCurrentTime()||0)+(d.seekOffset||10));ytPlayer.seekTo(t,true)}
+      else audio.currentTime=Math.min(audio.duration||Infinity,audio.currentTime+(d.seekOffset||10));
+    });
+    safe("seekto",d=>{
+      if(!Number.isFinite(d.seekTime))return;
+      if(isYouTubeTrack(currentTrack)&&ytPlayer)ytPlayer.seekTo(d.seekTime,true);
+      else if(audio.duration){if(d.fastSeek&&"fastSeek" in audio)audio.fastSeek(d.seekTime);else audio.currentTime=d.seekTime;}
+    });
+    const duration=isYouTubeTrack(currentTrack)?Number(ytPlayer?.getDuration?.()||0):Number(audio.duration||0);
+    const position=isYouTubeTrack(currentTrack)?Number(ytPlayer?.getCurrentTime?.()||0):Number(audio.currentTime||0);
+    if(duration>0&&Number.isFinite(duration)&&"setPositionState" in navigator.mediaSession){
+      try{navigator.mediaSession.setPositionState({duration,playbackRate:1,position:Math.min(position,duration)})}catch(e){}
+    }
+  }catch(e){}
+}
+
+function updateBackgroundPlaybackStatus(){
+  const el=document.getElementById("backgroundPlaybackStatus"); if(!el)return;
+  if("mediaSession" in navigator){
+    el.textContent="🔒 画面OFF・別アプリ移動中も再生（端末・ブラウザ側の対応範囲内）／ロック画面操作に対応";
+  }else{
+    el.textContent="このブラウザではロック画面のメディア操作に対応していません。";
+  }
+}
+updateBackgroundPlaybackStatus();
+
+(function showHostingMode(){
+  const h=document.getElementById("helperText");
+  if(!h)return;
+  if(location.protocol==="https:"){
+    h.textContent="HTTPS版：YouTube公式埋め込みとMuguet Musicの再生操作を使えます。";
+  }else if(location.protocol!=="file:"){
+    h.textContent="Web版：YouTube公式埋め込みを使用しています。";
+  }
+})();
+
+document.getElementById("mini").onclick=e=>{if(!e.target.closest("button"))openPlayer()};document.getElementById("miniPlay").onclick=e=>{e.stopPropagation();togglePlay()};document.getElementById("headerPlay").onclick=togglePlay;document.getElementById("play").onclick=togglePlay;document.getElementById("prev").onclick=()=>next(-1);document.getElementById("next").onclick=()=>next(1);document.getElementById("shuffle").onclick=()=>{shuffle=!shuffle;document.getElementById("shuffle").classList.toggle("active",shuffle)};document.getElementById("repeat").onclick=()=>{repeat=!repeat;document.getElementById("repeat").classList.toggle("active",repeat)};document.getElementById("volume").oninput=e=>{const v=Number(e.target.value);audio.volume=v;if(ytPlayer&&ytApiReady)try{ytPlayer.setVolume(v*100)}catch(err){}};audio.volume=.25;
+function openPlayer(){document.getElementById("player").classList.add("open");history.pushState({player:true},"")}function closePlayer(){document.getElementById("player").classList.remove("open")}document.getElementById("closePlayer").onclick=closePlayer;window.onpopstate=closePlayer;
+document.getElementById("art").onclick=()=>{document.getElementById("art").classList.toggle("hide");document.getElementById("lyrics").classList.toggle("show")};document.getElementById("lyrics").onclick=()=>{document.getElementById("art").classList.remove("hide");document.getElementById("lyrics").classList.remove("show")};
+audio.ontimeupdate=()=>{if(audio.duration){document.getElementById("seek").value=audio.currentTime/audio.duration*100;document.getElementById("elapsed").textContent=fmt(audio.currentTime);document.getElementById("duration").textContent=fmt(audio.duration);if("mediaSession" in navigator&&"setPositionState" in navigator.mediaSession&&Number.isFinite(audio.duration)){try{navigator.mediaSession.setPositionState({duration:audio.duration,playbackRate:audio.playbackRate||1,position:Math.min(audio.currentTime,audio.duration)})}catch(e){}}}};document.getElementById("seek").oninput=e=>{if(isYouTubeTrack()&&ytPlayer&&ytApiReady){const d=Number(ytPlayer.getDuration()||0);if(d>0)ytPlayer.seekTo(d*Number(e.target.value)/100,false)}else if(audio.duration)audio.currentTime=audio.duration*e.target.value/100};audio.onplay=()=>{playing=true;syncControls();if("mediaSession" in navigator)navigator.mediaSession.playbackState="playing";updateMediaSession()};audio.onpause=()=>{playing=false;syncControls();if("mediaSession" in navigator)navigator.mediaSession.playbackState="paused"};audio.onended=()=>repeat?selectPlay(currentIndex):next(1);
+
+document.getElementById("loadAudioBtn").onclick=()=>{if(!currentTrack){alert("先に曲を選択してください");return}document.getElementById("audioFile").click()};
+document.getElementById("audioFile").onchange=async e=>{const f=e.target.files?.[0];if(!f)return;try{await attachAudioForCurrent(f);document.getElementById("helperText").textContent="音源を登録しました："+f.name}catch(err){alert("音源の登録に失敗しました")}e.target.value=""};
+
+document.getElementById("audioFolderInput")?.addEventListener("change",async e=>{
+  try{await importAudioFiles(e.target.files)}
+  catch(err){const s=document.getElementById("audioImportStatus");s.style.display="block";s.textContent="フォルダからの音源追加に失敗しました。"}
+  e.target.value="";
+});
+async function mm39RepairAudioByFilename(){
+  mm39EnsureIds();
+  const candidates=[];
+  for(const t of library){
+    if(!t.audioKey||!t.audioName)continue;
+    const oldBlob=await getAudioBlob(t.audioKey);
+    if(oldBlob)candidates.push({track:t,blob:oldBlob,name:t.audioName});
+  }
+  let fixed=0,amb=0;
+  for(const c of candidates){
+    const idx=findTrackForAudioFile(new File([c.blob],c.name,{type:c.blob.type||"audio/*"}));
+    if(idx<0||library[idx]===c.track)continue;
+    const target=library[idx];
+    if(target.audioKey && target.audioName){
+      const targetBlob=await getAudioBlob(target.audioKey);
+      if(targetBlob){
+        /* Do not overwrite a different known audio file automatically. */
+        amb++; continue;
+      }
+    }
+    const key=mm39AudioKey(target);
+    await saveAudioBlob(key,c.blob);
+    target.audioKey=key; target.audioName=c.name; target.sourceType="local";
+    fixed++;
+  }
+  save();
+  alert(fixed?("音源を"+fixed+"曲、ファイル名から再照合しました。"):(amb?"安全のため自動変更しなかった曲があります。":"一致する音源はありませんでした。"));
+  setView();
+}
+document.getElementById("repairAudioBtn")?.addEventListener("click",mm39RepairAudioByFilename);
+
+document.getElementById("audioFilesInput").addEventListener("change",async e=>{try{await importAudioFiles(e.target.files)}catch(err){const s=document.getElementById("audioImportStatus");s.style.display="block";s.textContent="音源のまとめ読み込みに失敗しました。"}e.target.value=""});
+document.getElementById("saveYouTubeBtn").onclick=()=>{
+  if(!currentTrack){alert("先に曲を選択してください");return}
+  const id=extractYouTubeVideoId(document.getElementById("youtubeUrl").value);
+  if(!id){alert("YouTubeのURLまたは11文字の動画IDを入力してください");return}
+  currentTrack.sourceType="youtube";
+  currentTrack.youtubeId=id;
+  currentTrack.youtubeUrl=`https://www.youtube.com/watch?v=${id}`;
+  // Keep any previously registered local audio; sourceType selects YouTube for now.
+  save();
+  document.getElementById("helperText").textContent="YouTubeの動画を登録しました。";
+  selectPlay(library.indexOf(currentTrack));
+};
+document.getElementById("editLyricsBtn").onclick=()=>{
+  if(!currentTrack){alert("先に曲を選択してください");return}
+  const current=currentTrack.lyrics||"";
+  const text=prompt("この曲の歌詞を入力してください。\\nユーザーさんが用意したテキストを貼り付けてください。",current);
+  if(text===null)return;
+  currentTrack.lyrics=text;save();loadLyricsForCurrent();
+  document.getElementById("helperText").textContent=text?"歌詞を保存しました":"歌詞を空にしました";
+};
+document.getElementById("nav").onclick=e=>{const b=e.target.closest("[data-tab]");if(b){currentTab=b.dataset.tab;setView()}};
+
+let deferredInstallPrompt=null;
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstallPrompt=e;const b=document.getElementById("installBtn");b.style.display="grid";b.classList.add("install-ready")});
+document.getElementById("installBtn").onclick=async()=>{
+  if(!deferredInstallPrompt){alert("ブラウザのメニューから「アプリをインストール」または「ホーム画面に追加」を選んでください。");return}
+  deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;document.getElementById("installBtn").style.display="none";
+};
+if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+function normalizeLyricsMatchName(name){
+  return String(name||"").replace(/\.(lrc|txt)$/i,"").replace(/[\u3010\u3011\[\]\(\)（）「」『』]/g," ").replace(/[：:]/g," ").replace(/\s+/g," ").trim().toLowerCase();
+}
+function stripLrcTimestamps(text){
+  return text.replace(/\[[0-9]{1,2}:[0-9]{2}(?:[.:][0-9]{1,3})?\]/g,"").replace(/^\[(ti|ar|al|by|offset|re|ve|length):.*\]\s*$/gim,"").replace(/\n{3,}/g,"\n\n").trim();
+}
+function findTrackForLyricsFile(fileName){
+  const base=normalizeLyricsMatchName(fileName);
+  let hit=library.find(t=>normalizeLyricsMatchName(t.title)===base);
+  if(hit)return hit;
+  const parts=base.split(/\s[-–—]\s/).map(x=>x.trim()).filter(Boolean);
+  if(parts.length>1){
+    const titlePart=parts[parts.length-1];
+    hit=library.find(t=>normalizeLyricsMatchName(t.title)===titlePart);
+    if(hit)return hit;
+  }
+  return library.filter(t=>base.includes(normalizeLyricsMatchName(t.title))).sort((a,b)=>b.title.length-a.title.length)[0]||null;
+}
+function splitCombinedLyrics(raw){
+  const lines=String(raw||"").replace(/^\uFEFF/,"").replace(/\r\n?/g,"\n").split("\n");
+  const sections=[]; let current=null;
+  const patterns=[/^\s*【\s*(.+?)\s*】\s*$/,/^\s*##\s*(.+?)\s*$/,/^\s*===+\s*(.+?)\s*===+\s*$/,/^\s*曲名\s*[：:]\s*(.+?)\s*$/];
+  for(const line of lines){
+    let title=null;
+    for(const re of patterns){const m=line.match(re);if(m){title=m[1].trim();break;}}
+    if(title){if(current)sections.push(current);current={title,lyrics:[]};}
+    else if(current)current.lyrics.push(line);
+  }
+  if(current)sections.push(current);
+  return sections.map(s=>({title:s.title,lyrics:s.lyrics.join("\n").trim()})).filter(s=>s.title&&s.lyrics);
+}
+async function importLyricsFiles(files){
+  let matched=0, skipped=0, names=[];
+  for(const file of files){
+    try{
+      const raw=await file.text();
+      if(/\.lrc$/i.test(file.name)){
+        const track=findTrackForLyricsFile(file.name), lyrics=stripLrcTimestamps(raw);
+        if(track&&lyrics){track.lyrics=lyrics;track.lyricsFileName=file.name;matched++;}
+        else{skipped++;names.push(file.name);}
+        continue;
+      }
+      const sections=splitCombinedLyrics(raw);
+      if(sections.length){
+        for(const section of sections){
+          const track=findTrackForLyricsFile(section.title);
+          if(track){track.lyrics=section.lyrics;track.lyricsFileName=file.name;matched++;}
+          else{skipped++;names.push(section.title);}
+        }
+      }else{
+        const track=findTrackForLyricsFile(file.name), lyrics=raw.trim();
+        if(track&&lyrics){track.lyrics=lyrics;track.lyricsFileName=file.name;matched++;}
+        else{skipped++;names.push(file.name);}
+      }
+    }catch(e){skipped++;names.push(file.name);}
+  }
+  save();loadLyricsForCurrent();
+  const box=document.getElementById("lyricsImportStatus");
+  box.style.display="block";
+  const safeNames=names.slice(0,10).map(n=>String(n).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))).join("<br>");
+  box.innerHTML=`<strong>${matched}曲の歌詞を登録しました。</strong>${skipped?`<br>${skipped}件はライブラリ内の曲名と一致しませんでした。${safeNames?`<br><small>${safeNames}${names.length>10?"<br>…":""}</small>`:""}`:""}<br><small>同じ曲に再読み込みすると歌詞は上書きされます。</small>`;
+}
+const settingsModal=document.getElementById("settingsModal");
+
+window.openMuguetSettings=function(){
+  const m=document.getElementById("settingsModal");
+  if(m){m.classList.add("open");m.setAttribute("aria-hidden","false");}
+};
+
+function openSettings(){settingsModal.classList.add("open");settingsModal.setAttribute("aria-hidden","false");document.getElementById("settingsDeviceLabel").textContent=getDeviceProfileLabel();updateSettingsButtons();}
+function closeSettings(){
+  settingsModal.classList.add("open","settings-minimized");
+  settingsModal.setAttribute("aria-hidden","false");
+}
+function restoreSettings(){
+  settingsModal.classList.remove("settings-minimized");
+  settingsModal.classList.add("open");
+  settingsModal.setAttribute("aria-hidden","false");
+}
+
+
+
+document.getElementById("closeSettings").onclick=closeSettings;settingsModal.addEventListener("click",e=>{if(e.target===settingsModal)closeSettings()});
+function updateSettingsButtons(){document.getElementById("settingsShuffle").textContent=shuffle?"オン":"オフ";document.getElementById("settingsRepeat").textContent=repeat?"オン":"オフ";document.getElementById("settingsVolume").value=audio.volume;document.getElementById("settingsVolumeText").textContent=Math.round(audio.volume*100)+"%";}
+document.getElementById("settingsVolume").oninput=e=>{
+  const v=Number(e.target.value);audio.volume=v;if(ytPlayer&&ytApiReady)try{ytPlayer.setVolume(v*100)}catch(err){}
+  document.getElementById("settingsVolumeText").textContent=Math.round(v*100)+"%";
+};
+document.getElementById("settingsImportLyrics").onclick=()=>{try{document.getElementById("lyricsFilesInput").click()}catch(e){}};
+
+document.getElementById("settingsImportLyrics").addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();document.getElementById("lyricsFilesInput").click()}});
+document.getElementById("settingsImportLyrics").setAttribute("tabindex","0");
+
+document.getElementById("lyricsFilesInput").onchange=async e=>{const files=[...e.target.files||[]];if(files.length)await importLyricsFiles(files);e.target.value=""};
+document.getElementById("settingsShuffle").onclick=()=>{shuffle=!shuffle;document.getElementById("shuffle").classList.toggle("active",shuffle);updateSettingsButtons()};
+document.getElementById("settingsRepeat").onclick=()=>{repeat=!repeat;document.getElementById("repeat").classList.toggle("active",repeat);updateSettingsButtons()};
+document.getElementById("settingsBackup").onclick=exportMuguetLibrary;
+document.getElementById("settingsRestore").onclick=()=>document.getElementById("restoreInput").click();
+document.getElementById("settingsInstall").onclick=()=>document.getElementById("installBtn").click();
+document.getElementById("prev").innerHTML=icons.prev;document.getElementById("next").innerHTML=icons.next;document.getElementById("shuffle").innerHTML=icons.shuffle;document.getElementById("repeat").innerHTML=icons.repeat;document.getElementById("closePlayer").innerHTML=icons.close;document.getElementById("closeSettings").innerHTML=icons.close;setYouTubeWrap(false);syncControls();setView();
+</script>
+<script>
+(function(){const l=document.getElementById('deviceProfileLabel');if(l)l.textContent=getDeviceProfileLabel();const b=document.getElementById('backupBtn'),r=document.getElementById('restoreBtn'),i=document.getElementById('restoreInput');if(b)b.onclick=exportMuguetLibrary;if(r)r.onclick=()=>i.click();if(i)i.onchange=e=>{if(e.target.files[0])importMuguetLibrary(e.target.files[0]);};})();
+
+</script>
+<script>
+/* Collapsible settings panels */
+(function(){
+  const settings = document.getElementById("settingsModal");
+  if(!settings) return;
+  const content = settings.querySelector(".settings-content") || settings.querySelector(".settings-body") || settings;
+  const candidates = [...content.querySelectorAll(".settings-group")];
+  candidates.forEach(group=>{
+    if(group.closest(".settings-section")) return;
+    const heading = group.querySelector("h3,h4,strong");
+    if(!heading) return;
+    const title = heading.textContent.trim();
+    if(!title) return;
+    const details=document.createElement("details");
+    details.className="settings-section";
+    const summary=document.createElement("summary");
+    summary.textContent=title;
+    const body=document.createElement("div");
+    body.className="settings-section-body";
+    [...group.childNodes].forEach(node=>{
+      if(node===heading||node===heading.parentElement&&heading.parentElement===group) return;
+      body.appendChild(node.cloneNode(true));
+    });
+    // Safer fallback: move all children except the heading.
+    group.innerHTML="";
+    details.appendChild(summary);
+    details.appendChild(body);
+    group.replaceWith(details);
+  });
+})();
+</script><script>
+/* Reliable settings close behavior */
+(function(){
+  const closeBtn = document.getElementById("closeSettings");
+  const modal = document.getElementById("settingsModal");
+  if(!modal) return;
+  function closeSettingsPanel(ev){
+    if(ev){ev.preventDefault();ev.stopPropagation();}
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden","true");
+  }
+  if(closeBtn){
+    closeBtn.type = "button";
+    closeBtn.setAttribute("aria-label","設定を閉じる");
+    closeBtn.addEventListener("click", closeSettingsPanel, true);
+    closeBtn.addEventListener("touchend", closeSettingsPanel, {passive:false});
+  }
+  document.addEventListener("keydown", e=>{
+    if(e.key==="Escape" && modal.classList.contains("open")) closeSettingsPanel(e);
+  });
+})();
+</script><script>
+(function(){
+  const m=document.getElementById("settingsModal");
+  const title=document.getElementById("settingsTitle");
+  if(!m||!title)return;
+  title.textContent="Muguet Music 設定";
+})();
+</script>
+
+<script id="muguet-v40-more">
+document.addEventListener("DOMContentLoaded",function(){
+  ["playerMore","headerMore"].forEach(function(id){
+    const b=document.getElementById(id);
+    if(!b)return;
+    b.type="button";
+    b.style.pointerEvents="auto";
+    b.style.touchAction="manipulation";
+    b.onclick=function(e){
+      e.preventDefault();
+      if(typeof openSettings==="function")openSettings();
+    };
+  });
+});
+</script>
+\n<script id="muguet-v60-render-recovery">
+(function(){
+  function recover(){
+    var root=document.getElementById("view"),nav=document.getElementById("nav");
+    if(!root||!nav)return;
+    if(root.textContent.trim()||root.children.length)return;
+    var tracks=[];
+    try{if(typeof library!=="undefined"&&Array.isArray(library))tracks=library;}catch(e){}
+    if(!tracks.length){try{if(typeof flat!=="undefined"&&Array.isArray(flat))tracks=flat;}catch(e){}}
+    var tabs=[["listen","今すぐ聴く","⌂"],["new","新着","✦"],["artists","アーティスト","♙"],["albums","アルバム","▤"],["fav","お気に入り","♡"]];
+    function esc(v){return String(v||"").replace(/[&<>\"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+    function paint(tab){
+      var list=tracks.slice();
+      if(tab==="new")list=list.slice(-30).reverse();
+      if(tab==="fav")list=list.filter(function(t){return t.favorite;});
+      if(tab==="artists"){var seen={};list=list.filter(function(t){var a=t.artist||"未設定";if(seen[a])return false;seen[a]=true;return true;});}
+      var heading=({listen:"最近聴いた曲",new:"新着",artists:"アーティスト",albums:"アルバム",fav:"お気に入り"})[tab]||"最近聴いた曲";
+      var rows=list.slice(0,80).map(function(t,i){return '<button type="button" data-recovery-play="'+i+'" style="width:100%;display:flex;align-items:center;gap:12px;text-align:left;padding:12px;border-bottom:1px solid #dce9e2;background:transparent;color:#30433b"><span style="width:42px;height:42px;border-radius:12px;background:#d1e7dd;display:grid;place-items:center">♫</span><span><b>'+esc(t.title)+'</b><small style="display:block;color:#718078">'+esc(t.artist||"未設定")+'</small></span></button>';}).join("");
+      root.innerHTML='<div style="display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap;margin:12px 0 22px"><div><small style="letter-spacing:.2em;color:#8b9991">MUGUET MUSIC</small><h2 style="font:500 clamp(28px,5vw,46px) Georgia;margin:8px 0">'+heading+'</h2><p style="color:#718078;margin:0">あなたの音楽時間を、楽しく。 · '+tracks.length+'曲</p></div><input id="mmRecoverySearch" placeholder="曲名・アーティストを検索" style="padding:12px 16px;border:1px solid #cbdcd3;border-radius:24px;max-width:280px;width:100%"></div><div style="background:rgba(255,255,255,.65);border:1px solid #dce9e2;border-radius:20px;padding:8px">'+(rows||'<p style="padding:20px;color:#718078">曲がまだ登録されていません。「アルバム／シングルを追加」から登録できます。</p>')+'</div>';
+      nav.innerHTML=tabs.map(function(t){return '<button type="button" data-recovery-tab="'+t[0]+'" style="padding:8px 3px;color:#65766d;display:flex;flex-direction:column;align-items:center;gap:4px"><span style="font-size:20px">'+t[2]+'</span><small>'+t[1]+'</small></button>';}).join("");
+      nav.onclick=function(e){var b=e.target.closest("[data-recovery-tab]");if(b)paint(b.getAttribute("data-recovery-tab"));};
+      root.onclick=function(e){var b=e.target.closest("[data-recovery-play]");if(!b)return;var idx=Number(b.getAttribute("data-recovery-play"));try{if(typeof selectPlay==="function")selectPlay(idx);else alert("再生機能の初期化が完了していません。曲一覧は表示できています。");}catch(err){alert("再生画面の初期化に失敗しました。曲一覧は表示できています。");}};
+      var search=document.getElementById("mmRecoverySearch");if(search)search.oninput=function(){var q=this.value.toLowerCase();root.querySelectorAll("[data-recovery-play]").forEach(function(b){b.style.display=b.textContent.toLowerCase().includes(q)?"flex":"none";});};
+    }
+    paint("listen");
+    window.__muguetRecoveryShown=true;
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){setTimeout(recover,80);});else setTimeout(recover,80);
+})();
+</script>\n</body></html>
